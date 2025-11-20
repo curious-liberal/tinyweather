@@ -1,24 +1,24 @@
 <script lang="ts">
-    import { TypeWriter } from "$lib/libs/typewriter"
-	import { onMount } from "svelte"
+	import { TypeWriter } from '$lib/libs/typewriter';
+	import { onMount } from 'svelte';
 
-    const props = $props<{suggestions: string[]}>()
-    const suggestions = props.suggestions
+	const props = $props<{ suggestions: string[] }>();
+	const suggestions = props.suggestions;
 
-    let placeholder = $state("")
+	let placeholder = $state('');
 
-    const updatePlaceholder = (text: string): void => {
-        placeholder = text
-    }
+	const updatePlaceholder = (text: string): void => {
+		placeholder = text;
+	};
 
-    onMount( () => {
-        const tw = new TypeWriter({
-            content: suggestions,
-            target: updatePlaceholder,
-        })
+	onMount(() => {
+		const tw = new TypeWriter({
+			content: suggestions,
+			target: updatePlaceholder
+		});
 
-        tw.write()
-    })
+		tw.write();
+	});
 </script>
 
-<input class="searchbar" type="text" {placeholder}>
+<input class="searchbar" type="text" {placeholder} />
