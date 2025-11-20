@@ -3,6 +3,7 @@ export interface TypeWriterOptions {
     speed?: number,
     backspeed?: number,
     loop?: number,
+    loopdelay?: number,
     delay?: number,
     pause?: number,
     backdelay?: number,
@@ -14,6 +15,7 @@ export class TypeWriter {
     speed: number
     backspeed: number
     loop: number
+    loopdelay: number
     delay: number
     pause: number
     backdelay: number
@@ -30,6 +32,7 @@ export class TypeWriter {
         backspeed = 40,
         backdelay = 400,
         loop = -1,
+        loopdelay = 800,
         delay = 1000,
         pause = 800,
         target
@@ -43,7 +46,12 @@ export class TypeWriter {
         this.backdelay = backdelay
 
         this.loop = loop
+        this.loopdelay = loopdelay
+
+        // Delay after looping through list of phrases
         this.delay = delay
+
+        // Pause after finishing word
         this.pause = pause
 
         // State
@@ -53,6 +61,8 @@ export class TypeWriter {
 
         this.cursor = 1
         this.target = target
+
+        // Direction of typing
         this.forward = true
     }
 
@@ -72,9 +82,12 @@ export class TypeWriter {
             } else if (this.loop > 0) {
                 this.index = -1
                 this.loop--
+                this.loopdelay = 1
+            } else if (this.loop === 0) {  // If the loop is finished
+                return
             }
 
-            this.write()
+            setTimeout(() => this.write(), Math.abs(this.loopdelay - this.backdelay))
             return
         }
 
