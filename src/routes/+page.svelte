@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+    import Searchbar from "$lib/comps/SearchBar.svelte"
+
+    const suggestions = ["London", "Glasgow", "Birmingham", "Norwich", "Malta"]
+</script>
+
+<div class="wrapper">
+    <Searchbar {suggestions} searchIcon="left" />
+</div>
