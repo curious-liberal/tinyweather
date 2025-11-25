@@ -31,5 +31,9 @@
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.46.1",
 		"vite": "^7.1.10"
+	},
+	"dependencies": {
+		"deepinfra": "^2.0.2",
+		"openmeteo": "^1.2.2"
 	}
 }

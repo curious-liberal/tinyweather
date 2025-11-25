@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { TypeWriter } from '$lib/libs/typewriter';
 	import { onMount } from 'svelte';
+	import {fetchWeatherApi} from "openmeteo"
 
 	export interface NominatimResult {
 		place_id: number;
@@ -47,8 +48,79 @@
 
 	$effect(debounceSearch)
 
-	const grabWeather = (index: number) => {
-		console.log(`Grabbing weather for ${suggestions[index]} at location ${suggestionsCoords[index][0]} ${suggestionsCoords[index][1]}`)
+	// Grab weather given index (place in suggestionCoords array)
+	const grabWeather = async (index: number) => {
+		console.log("Grabbing weather...")
+		suggestions = []
+		const params = {
+			latitude: suggestionsCoords[index][0],
+			longitude: suggestionsCoords[index][1],
+			hourly: ["temperature_2m", "precipitation_probability", "precipitation", "relative_humidity_2m", "dew_point_2m", "apparent_temperature", "rain", "showers", "snowfall", "snow_depth", "cloud_cover", "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high", "visibility", "evapotranspiration", "temperature_180m", "temperature_120m", "temperature_80m", "wind_gusts_10m", "wind_direction_180m", "wind_direction_120m", "wind_speed_10m", "wind_speed_80m", "wind_speed_180m", "wind_speed_120m", "wind_direction_10m", "wind_direction_80m"],
+		}
+		const url = "https://api.open-meteo.com/v1/forecast"
+		const responses = await fetchWeatherApi(url, params)
+
+		// Process first location. Add a for-loop for multiple locations or weather models
+		const response = responses[0];
+
+		// Attributes for timezone and location
+		const latitude = response.latitude();
+		const longitude = response.longitude();
+		const elevation = response.elevation();
+		const utcOffsetSeconds = response.utcOffsetSeconds();
+
+		console.log(
+			`\nCoordinates: ${latitude}°N ${longitude}°E`,
+			`\nElevation: ${elevation}m asl`,
+			`\nTimezone difference to GMT+0: ${utcOffsetSeconds}s`,
+		);
+
+		const hourly = response.hourly()!;
+
+		// Note: The order of weather variables in the URL query and the indices below need to match!
+		const weatherData = {
+			hourly: {
+				time: Array.from(
+					{ length: (Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval() },
+					(_, i) => new Date((Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) * 1000)
+				),
+				temperature_2m: hourly.variables(0)!.valuesArray(),
+				precipitation_probability: hourly.variables(1)!.valuesArray(),
+				precipitation: hourly.variables(2)!.valuesArray(),
+				relative_humidity_2m: hourly.variables(3)!.valuesArray(),
+				dew_point_2m: hourly.variables(4)!.valuesArray(),
+				apparent_temperature: hourly.variables(5)!.valuesArray(),
+				rain: hourly.variables(6)!.valuesArray(),
+				showers: hourly.variables(7)!.valuesArray(),
+				snowfall: hourly.variables(8)!.valuesArray(),
+				snow_depth: hourly.variables(9)!.valuesArray(),
+				cloud_cover: hourly.variables(10)!.valuesArray(),
+				cloud_cover_low: hourly.variables(11)!.valuesArray(),
+				cloud_cover_mid: hourly.variables(12)!.valuesArray(),
+				cloud_cover_high: hourly.variables(13)!.valuesArray(),
+				visibility: hourly.variables(14)!.valuesArray(),
+				evapotranspiration: hourly.variables(15)!.valuesArray(),
+				temperature_180m: hourly.variables(16)!.valuesArray(),
+				temperature_120m: hourly.variables(17)!.valuesArray(),
+				temperature_80m: hourly.variables(18)!.valuesArray(),
+				wind_gusts_10m: hourly.variables(19)!.valuesArray(),
+				wind_direction_180m: hourly.variables(20)!.valuesArray(),
+				wind_direction_120m: hourly.variables(21)!.valuesArray(),
+				wind_speed_10m: hourly.variables(22)!.valuesArray(),
+				wind_speed_80m: hourly.variables(23)!.valuesArray(),
+				wind_speed_180m: hourly.variables(24)!.valuesArray(),
+				wind_speed_120m: hourly.variables(25)!.valuesArray(),
+				wind_direction_10m: hourly.variables(26)!.valuesArray(),
+				wind_direction_80m: hourly.variables(27)!.valuesArray(),
+			},
+		};
+
+		// Pass off to LLM
+
+	}
+
+	const interpretWeather = () => {
+
 	}
 
 	// Typewriter placeholder
