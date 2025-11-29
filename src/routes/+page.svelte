@@ -103,7 +103,7 @@ if (isNight) {
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
-		padding: 2em;
+		padding: 3em 2.5em 2.5em;
 		color: white;
 		position: relative;
 		z-index: 1;
@@ -176,6 +176,10 @@ if (isNight) {
 	}
 
 	@media (max-width: 768px) {
+		.content {
+			padding: 2.2em 1.4em 1.6em;
+		}
+
 		.title {
 			font-size: 2.8em;
 			letter-spacing: -1px;
@@ -192,6 +196,10 @@ if (isNight) {
 	}
 
 	@media (max-width: 480px) {
+		.content {
+			padding: 1.6em 1em 1.2em;
+		}
+
 		.title {
 			font-size: 2.2em;
 		}

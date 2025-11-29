@@ -126,12 +126,12 @@
 		font-family:
 			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
 			'Helvetica Neue', sans-serif;
-		font-size: 1.6em;
-		line-height: 1.6;
+		font-size: 1.5em;
+		line-height: 1.55;
 		color: white;
-		max-width: 600px;
+		max-width: 640px;
 		margin: 0 auto;
-		padding: 2em;
+		padding: 1.6em 1.4em;
 		background: none;
 		animation: fade-in-up 0.8s ease-out;
 		font-weight: 400;
@@ -200,6 +200,28 @@
 		100% {
 			opacity: 1;
 			color: white;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.summary {
+			margin-top: 1.5em;
+			padding: 0 0.6em;
+		}
+
+		.weather-summary {
+			font-size: 1.2em;
+			line-height: 1.5;
+			max-width: 100%;
+			padding: 1.2em 1em;
+		}
+
+		.loading-container {
+			gap: 0.8em;
+		}
+
+		.loading-text {
+			font-size: 1em;
 		}
 	}
 </style>

@@ -58,13 +58,21 @@ export const tones: Tone[] = [
 		emoji: '🔬'
 	},
 	{
+		id: 'inpc',
+		name: 'INPC',
+		description: 'Cat-based weather reading',
+		prompt:
+			'weather report in the style of the show: short, observational, slightly amused. Start with a simple intro (“Time for the weather”, “Right then, weather”, etc.). George the cat gives the temperature with one tiny action (a blink, head turn, ear twitch, nose move). Use simple terms like “less than warm”, “not warm”. Tree of Truth only for wind levels (“low wind”, “bit windy”, “significant wind”, “verging on moderate”). Include at most one small optional extra detail (a seagull, neighbour window glint, a drifting bag). Describe the sky simply (“bit grey”, “mottled”, “blue-ish”, “grey with white bits”). End with a quiet sky verdict (“yeah… we’ll go with grey-ish”, “mmm actually a grey-ish blue”). Finish with “There you go, that’s the weather.”. Stay grounded, no surrealism, no rambling.',
+		emoji: '🐈‍⬛'
+	},
+	{
 		id: 'cute',
 		name: 'Cute',
 		description: 'Sweet & whimsical',
 		prompt:
 			'adorable and sweet weather report with charming nature imagery like birds chirping, butterflies dancing, puddle jumping, sunset watching. Be whimsical and positive with cute metaphors and delightful activities',
 		emoji: '🦋'
-	}
+	},
 ];
 
 // localStorage key for tone preference

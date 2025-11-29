@@ -43,7 +43,7 @@ export function generateFollowUpSuggestions(
 	}
 
 	// Always include these common suggestions
-	if (suggestions.length < 3) {
+	if (suggestions.length < 4) {
 		const commonSuggestions = [
 			{
 				id: 'tomorrow',
@@ -62,12 +62,18 @@ export function generateFollowUpSuggestions(
 				text: 'Compare to yesterday?',
 				prompt: `How does today's weather in ${location} compare to typical weather for this time of year?`,
 				emoji: '📊'
+			},
+			{
+				id: 'drive',
+				text: 'Safe to drive?',
+				prompt: `Based on the weather conditions in ${location}, are the driving conditions safe today? Any precautions needed?`,
+				emoji: '🚗'
 			}
 		];
 
 		// Add suggestions that haven't been added yet
 		commonSuggestions.forEach((suggestion) => {
-			if (!suggestions.find((s) => s.id === suggestion.id) && suggestions.length < 3) {
+			if (!suggestions.find((s) => s.id === suggestion.id) && suggestions.length < 4) {
 				suggestions.push(suggestion);
 			}
 		});
@@ -81,7 +87,7 @@ export function generateFollowUpSuggestions(
 		emoji: '💬'
 	});
 
-	return suggestions.slice(0, 4); // Maximum 4 suggestions
+	return suggestions.slice(0, 5); // Maximum 5 suggestions
 }
 
 export async function answerFollowUpQuestion(

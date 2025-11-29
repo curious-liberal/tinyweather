@@ -5,7 +5,12 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<title>Tiny Weather</title>
+	<meta
+		name="description"
+		content="Tiny Weather — fast AI-powered weather summaries with personality, tone control, and smart follow-ups."
+	/>
+	<link rel="icon" type="image/svg+xml" href={favicon} />
 	<link rel="preconnect" href="https://nominatim.openstreetmap.org" />
 	<link rel="preconnect" href="https://api.open-meteo.com" />
 </svelte:head>
@@ -25,5 +30,11 @@
 		font-family:
 			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
 			'Helvetica Neue', sans-serif;
+	}
+
+	:global(.emoji) {
+		font-family: 'Apple Color Emoji', 'Twemoji Mozilla', 'Noto Color Emoji', 'Segoe UI Emoji', 'EmojiOne Color',
+			sans-serif;
+		font-synthesis: none;
 	}
 </style>

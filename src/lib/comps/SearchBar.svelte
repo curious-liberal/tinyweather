@@ -422,8 +422,8 @@
 	}
 
 	.searchbar-wrapper {
-		width: 100%;
-		max-width: 500px;
+		width: min(540px, 100%);
+		max-width: 540px;
 		display: flex;
 		justify-content: center;
 		position: relative;
@@ -499,5 +499,28 @@
 
 	.icon.none {
 		display: none;
+	}
+
+	@media (max-width: 600px) {
+		.searchbar-wrapper {
+			padding: 0.35em;
+			border-radius: 36px;
+			backdrop-filter: blur(14px) saturate(160%);
+			-webkit-backdrop-filter: blur(14px) saturate(160%);
+			box-shadow:
+				0 6px 22px rgba(0, 0, 0, 0.12),
+				inset 0 1px 0 rgba(255, 255, 255, 0.28),
+				inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+		}
+
+		.search-input {
+			padding: 0.7em 0.9em 0.7em 2.3em;
+			font-size: 1.05em;
+		}
+
+		.icon {
+			left: 1em;
+			width: 1em;
+		}
 	}
 </style>

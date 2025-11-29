@@ -101,7 +101,32 @@ export const toneLoadingMessages: Record<string, LoadingMessage> = {
 			'Analyzing precipitation matrices...'
 		]
 	},
-
+	inpc: {
+		weather: [
+			'Asking George for a temperature reading...',
+			'Waiting for George to blink or wobble...',
+			'Consulting the Tree of Truth...',
+			'Checking for fake George in the garden...',
+			'Assessing the vibes from next door’s bathroom window...',
+			'Scanning for seagulls on nearby rooftops...',
+			'Watching for plastic bags blowing dramatically...',
+			'Peering cautiously out of the shed...',
+			'Investigating the chilli plants’ emotional state...',
+			'Observing micro-twitches from the Official Weather Cat...'
+		],
+		response: [
+			'Interpreting George’s cryptic signals...',
+			'Cross-referencing with the Tree of Truth...',
+			'Confirming whether it is, in fact, “less than warm”...',
+			'Avoiding pointing the camera at the neighbour’s window...',
+			'Processing shed-based meteorological data...',
+			'Checking for storm-related cat drama...',
+			'Mentally preparing for potential hurricanes...',
+			'Watching the floor get wet in real time...',
+			'Examining wind levels using advanced bin-bag technology...',
+			'Calibrating the domestic weather instruments (chair, shed, chilli plant)...'
+		]
+	},
 	cute: {
 		weather: [
 			'Asking the little birdies...',

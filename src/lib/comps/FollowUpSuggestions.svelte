@@ -12,6 +12,11 @@
 
 	const { suggestions, weatherData, location, onCustomQuestion }: Props = $props();
 
+	// Sort suggestions to put "Something else" (custom) at the end
+	const displaySuggestions = $derived(
+		[...suggestions].sort((a, b) => (a.id === 'custom' ? 1 : b.id === 'custom' ? -1 : 0))
+	);
+
 	let showCustomInput = $state(false);
 	let customQuestion = $state('');
 	let isAnswering = $state(false);
@@ -69,9 +74,11 @@
 <div class="follow-up-container">
 	{#if suggestions.length > 0}
 		<div class="suggestions-grid">
-			{#each suggestions as suggestion, index}
+			{#each displaySuggestions as suggestion, index}
 				<button
 					class="suggestion-tag"
+					class:custom={suggestion.id === 'custom'}
+					class:mobile-hidden={index > 2}
 					onclick={() => handleSuggestionClick(suggestion)}
 					style="animation-delay: {index * 150}ms"
 				>
@@ -132,20 +139,25 @@
 		margin-top: 2em;
 		width: 100%;
 		max-width: 600px;
+		padding: 0 0.5em;
+		scroll-margin-top: 80px;
 	}
 
 	.suggestions-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		grid-template-columns: repeat(6, 1fr);
 		gap: 0.8em;
 		margin-bottom: 1em;
+		max-width: 600px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	.suggestion-tag {
 		display: flex;
 		align-items: center;
 		gap: 0.5em;
-		padding: 0.8em 1em;
+		padding: 0.75em 0.95em;
 		background: rgba(255, 255, 255, 0.15);
 		backdrop-filter: blur(20px);
 		border: 1px solid rgba(255, 255, 255, 0.2);
@@ -159,6 +171,30 @@
 		animation: bubbleGrow 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 		opacity: 0;
 		transform: scale(0);
+		text-align: left;
+		justify-content: flex-start;
+	}
+
+	/* Desktop: Top 3 items each span 2 columns (filling 6 columns) */
+	.suggestion-tag:nth-child(1) {
+		grid-column: 1 / 3;
+	}
+
+	.suggestion-tag:nth-child(2) {
+		grid-column: 3 / 5;
+	}
+
+	.suggestion-tag:nth-child(3) {
+		grid-column: 5 / 7;
+	}
+
+	/* Desktop: Bottom 2 items centered as a group */
+	.suggestion-tag:nth-child(4) {
+		grid-column: 2 / 4;
+	}
+
+	.suggestion-tag:nth-child(5) {
+		grid-column: 4 / 6;
 	}
 
 	.suggestion-tag:hover {
@@ -169,16 +205,19 @@
 
 	.emoji {
 		font-size: 1.2em;
+		flex-shrink: 0;
 	}
 
 	.text {
 		flex: 1;
 		text-align: left;
+		line-height: 1.3;
 	}
 
 	.custom-input-container {
 		margin-bottom: 1em;
 		animation: fadeInUp 0.4s ease-out;
+		scroll-margin-top: 120px;
 	}
 
 	.custom-input-wrapper {
@@ -220,7 +259,8 @@
 		display: flex;
 		gap: 0.5em;
 		margin-top: 0.8em;
-		justify-content: flex-end;
+		justify-content: space-between;
+		flex-wrap: wrap;
 	}
 
 	.submit-btn,
@@ -264,6 +304,7 @@
 	}
 
 	.answer-container {
+		margin-top: 0.5em;
 		animation: slideInAnswer 0.5s ease-out;
 	}
 
@@ -277,7 +318,7 @@
 		backdrop-filter: blur(20px) saturate(180%);
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border-radius: 20px;
-		padding: 1.5em;
+		padding: 1.2em;
 		border: none;
 		position: relative;
 		box-shadow:
@@ -291,7 +332,7 @@
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 		line-height: 1.5;
 		margin: 0;
-		font-size: 1.1em;
+		font-size: 1.05em;
 		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 	}
 
@@ -364,7 +405,7 @@
 	@keyframes slideInAnswer {
 		from {
 			opacity: 0;
-			transform: translateY(20px) scale(0.95);
+			transform: translateY(10px) scale(0.98);
 		}
 		to {
 			opacity: 1;
@@ -387,11 +428,56 @@
 
 	@media (max-width: 768px) {
 		.suggestions-grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 0.65em;
 		}
 
-		.suggestion-tag {
-			justify-content: center;
+		/* Hide suggestions 4 and 5 on mobile (show only 3 total) */
+		.suggestion-tag.mobile-hidden {
+			display: none;
+		}
+
+		/* Mobile: 2 on top row, "Something else" centered on bottom row spanning both columns */
+		.suggestion-tag:nth-child(3) {
+			grid-column: 1 / 3;
+			justify-self: center;
+			max-width: 280px;
+		}
+
+		/* Reset desktop positioning */
+		.suggestion-tag:nth-child(4),
+		.suggestion-tag:nth-child(5) {
+			grid-column: auto;
+		}
+
+		.follow-up-container {
+			margin-top: 1.25em;
+			padding: 0 0.25em;
+		}
+
+		.custom-input-wrapper {
+			padding: 0.9em;
+		}
+
+		.submit-btn,
+		.cancel-btn {
+			padding: 0.45em 0.9em;
+			border-radius: 10px;
+		}
+
+		.answer-content {
+			padding: 1em;
+			border-radius: 16px;
+		}
+
+		.answer-text {
+			font-size: 0.95em;
+		}
+
+		.close-answer {
+			top: 0.3em;
+			right: 0.5em;
+			font-size: 1.2em;
 		}
 	}
 </style>
