@@ -13,6 +13,15 @@ export interface NominatimResult {
 	name: string;
 	display_name: string;
 	boundingbox: [string, string, string, string];
+	address?: {
+		country?: string;
+		country_code?: string;
+		state?: string;
+		region?: string;
+		county?: string;
+		city?: string;
+		town?: string;
+	};
 }
 
 export interface WeatherData {

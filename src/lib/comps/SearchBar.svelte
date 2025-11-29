@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import {
 		searchLocations,
-		searchLocationsWithContext,
+		rankLocations,
 		fetchWeatherData,
 		processWeatherData,
 		interpretWeather
@@ -67,6 +67,10 @@
 	// Tone change debounce
 	let toneChangeTimer: ReturnType<typeof setTimeout> | null = null;
 
+	// Cache raw search results per query for quick reranking when location arrives
+	const rawSearchCache = new Map<string, NominatimResult[]>();
+	let lastSearchQuery = '';
+
 	const debounceSearch = () => {
 		if (typingTimer) {
 			suggestions = [];
@@ -80,17 +84,25 @@
 			if (fetchId !== currentId) return;
 
 			try {
-				// Use dual search strategy
-				const { local, global } = await searchLocationsWithContext(query, userLocation);
+				lastSearchQuery = query;
+				const cacheKey = query.toLowerCase();
 
-				// Combine results: top 3 local + top 2 global
-				const combinedResults = [...local.slice(0, 3), ...global.slice(0, 2)];
+				// Use cached raw results when available to avoid refetching
+				let rawResults = rawSearchCache.get(cacheKey);
 
-				// Update suggestions
+				if (!rawResults) {
+					rawResults = await searchLocations(query, 8);
+					rawSearchCache.set(cacheKey, rawResults);
+				}
+
+				const ranked = rankLocations(rawResults, query, userLocation);
+				const combinedResults = ranked.slice(0, 5);
+
+				// Bail if a newer search took over
+				if (fetchId !== currentId) return;
+
 				suggestions = combinedResults.map((i: NominatimResult) => i.display_name);
 				suggestionsCoords = combinedResults.map((i: NominatimResult) => [i.lat, i.lon]);
-
-				console.log(`Search results: ${local.length} local, ${global.length} global`);
 			} catch (error) {
 				console.error('Error in debounced search:', error);
 				// Fallback to original search
@@ -98,10 +110,26 @@
 				suggestions = data.map((i: NominatimResult) => i.display_name);
 				suggestionsCoords = data.map((i: NominatimResult) => [i.lat, i.lon]);
 			}
-		}, 450);
+		}, 320);
 	};
 
 	$effect(debounceSearch);
+
+	// If location arrives after we already searched, rerank locally without refetching
+	$effect(() => {
+		if (!userLocation) return;
+		if (lastSearchQuery.length < 3) return;
+		if (lastSearchQuery !== query) return;
+
+		const rawResults = rawSearchCache.get(lastSearchQuery.toLowerCase());
+		if (!rawResults) return;
+
+		const ranked = rankLocations(rawResults, lastSearchQuery, userLocation);
+		const combinedResults = ranked.slice(0, 5);
+
+		suggestions = combinedResults.map((i: NominatimResult) => i.display_name);
+		suggestionsCoords = combinedResults.map((i: NominatimResult) => [i.lat, i.lon]);
+	});
 
 	const handleSuggestionSelect = async (index: number) => {
 		console.log('Selecting location...');
@@ -173,7 +201,9 @@
 	};
 
 	const handleToneChange = async () => {
-		if (!currentWeatherData || !currentCoordinates) return;
+		const coords = currentCoordinates;
+		const weatherData = currentWeatherData;
+		if (!coords || !weatherData) return;
 
 		// Clear existing timer
 		if (toneChangeTimer) {
@@ -190,21 +220,17 @@
 				const tone = getCurrentTone($currentToneIndex);
 
 				// Check for cached response first
-				const cachedResponse = getCachedResponse(
-					currentCoordinates.lat,
-					currentCoordinates.lon,
-					tone.id
-				);
+				const cachedResponse = getCachedResponse(coords.lat, coords.lon, tone.id);
 
 				if (cachedResponse) {
 					console.log('Using cached tone response');
 					weatherSummary = cachedResponse;
 				} else {
 					console.log('Generating new tone response');
-					const summary = await interpretWeather(currentWeatherData, tone);
+					const summary = await interpretWeather(weatherData, tone);
 					weatherSummary = summary;
 					// Cache the new response
-					setCachedResponse(currentCoordinates.lat, currentCoordinates.lon, tone.id, summary);
+					setCachedResponse(coords.lat, coords.lon, tone.id, summary);
 				}
 			} catch (error) {
 				console.error('Error updating tone:', error);
