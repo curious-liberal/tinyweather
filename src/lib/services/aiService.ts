@@ -1,9 +1,5 @@
 import type { ProcessedWeatherData } from "$lib/types/weather";
-
-const tones: Record<string, string> = {
-	"funny": "funny, witty weather report that includes some funny naughty innuendos. Imagine a comedian presenting the weather",
-	"professional": "professional: extremely professional, informative and detailed weather reporter",
-};
+import type { Tone } from "$lib/stores/toneStore";
 
 interface AIServiceOptions {
 	model?: string;
@@ -13,7 +9,7 @@ interface AIServiceOptions {
 
 export async function interpretWeather(
 	weatherData: ProcessedWeatherData,
-	tone: string = "funny",
+	tone: Tone,
 	options: AIServiceOptions = {}
 ): Promise<string> {
 	const {
@@ -28,7 +24,7 @@ export async function interpretWeather(
 Here is weather data in JSON:
 ${JSON.stringify(weatherData)}
 
-You are a weather reporter with the tone of ${tone}: ${tones[tone]}.
+You are a weather reporter with the tone of ${tone.name}: ${tone.prompt}.
 Be clear, human-readable, and concise. Do not include thinking tags, only weather data, keep everything concise – 3 sentences max.
 `;
 

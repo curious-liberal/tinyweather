@@ -26,26 +26,45 @@
 	.suggestions-wrapper button {
 		animation: fade-in-up 0.6s;
 		cursor: pointer;
-		padding: 1em;
+		padding: 1em 1.2em;
 		margin: 0.3em 0;
-		border-radius: 1em;
-		transition: all 0.2s ease;
-		background: rgba(255, 255, 255, 0.9);
-		backdrop-filter: blur(10px);
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-		color: #333;
+		border-radius: 1.2em;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		background: linear-gradient(135deg,
+			rgba(255, 255, 255, 0.2) 0%,
+			rgba(255, 255, 255, 0.15) 50%,
+			rgba(255, 255, 255, 0.1) 100%);
+		backdrop-filter: blur(20px) saturate(180%);
+		-webkit-backdrop-filter: blur(20px) saturate(180%);
+		border: none;
+		box-shadow:
+			0 4px 16px rgba(0, 0, 0, 0.12),
+			inset 0 1px 0 rgba(255, 255, 255, 0.25),
+			inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+		color: white;
 		font-weight: 500;
 		width: 100%;
 		font-family: inherit;
 		font-size: inherit;
 		text-align: left;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		letter-spacing: 0.2px;
 	}
 
 	.suggestions-wrapper button:hover {
-		background: rgba(255, 255, 255, 1);
-		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+		background: linear-gradient(135deg,
+			rgba(255, 255, 255, 0.3) 0%,
+			rgba(255, 255, 255, 0.25) 50%,
+			rgba(255, 255, 255, 0.2) 100%);
+		transform: translateY(-3px) scale(1.02);
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.15),
+			inset 0 1px 0 rgba(255, 255, 255, 0.35),
+			inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+	}
+
+	.suggestions-wrapper button:active {
+		transform: translateY(-1px) scale(1.01);
 	}
 
 	@keyframes fade-in-up {

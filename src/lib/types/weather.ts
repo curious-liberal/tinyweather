@@ -73,3 +73,10 @@ export interface ProcessedWeatherData {
 	};
 	summaryHints: string[];
 }
+
+export interface FollowUpSuggestion {
+	id: string;
+	text: string;
+	prompt: string;
+	emoji: string;
+}
