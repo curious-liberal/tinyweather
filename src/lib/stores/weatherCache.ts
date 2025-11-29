@@ -13,8 +13,8 @@ export interface WeatherCache {
 	[locationKey: string]: CachedWeatherData;
 }
 
-// Cache duration: 30 minutes
-const CACHE_DURATION = 30 * 60 * 1000;
+// Cache duration: 60 minutes
+const CACHE_DURATION = 60 * 60 * 1000;
 
 export const weatherCache = writable<WeatherCache>({});
 

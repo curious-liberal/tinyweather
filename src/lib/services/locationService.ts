@@ -21,6 +21,8 @@ export async function searchLocations(
 	const filtered = results.filter((result: NominatimResult) => {
 		const displayName = result.display_name.toLowerCase();
 		const category = result.category?.toLowerCase() || '';
+		const type = result.type?.toLowerCase() || '';
+		const addressType = result.addresstype?.toLowerCase() || '';
 
 		// Remove obvious businesses and addresses with numbers
 		const isNotBusiness =
@@ -33,7 +35,28 @@ export async function searchLocations(
 
 		const isNotAddress = !displayName.match(/^\d+/); // Not starting with house number
 
-		return isNotBusiness && isNotAddress;
+		const allowedPlaces = new Set([
+			'country',
+			'state',
+			'province',
+			'region',
+			'county',
+			'city',
+			'town',
+			'village',
+			'suburb',
+			'locality',
+			'island',
+			'archipelago',
+			'municipality',
+			'state_district',
+			'district',
+			'quarter'
+		]);
+
+		const isRelevantPlace = allowedPlaces.has(type) || allowedPlaces.has(addressType);
+
+		return isNotBusiness && isNotAddress && isRelevantPlace;
 	});
 
 	return filtered.slice(0, limit);
@@ -44,11 +67,19 @@ export async function searchLocationsWithContext(
 	userLocation: UserLocation | null
 ): Promise<{ local: NominatimResult[]; global: NominatimResult[] }> {
 	try {
-		const ranked = await searchAndRankLocations(query, userLocation, 8);
-		return {
-			local: ranked.slice(0, 3),
-			global: ranked.slice(3, 8)
-		};
+		const country = userLocation?.country || userLocation?.countryCode;
+
+		const localQuery = country ? `${query}, ${country}` : query;
+
+		const [localResults, globalResults] = await Promise.all([
+			country ? searchLocations(localQuery, 5) : Promise.resolve([]),
+			searchLocations(query, 5)
+		]);
+
+		const local = country ? localResults : [];
+		const global = globalResults;
+
+		return { local, global };
 	} catch (error) {
 		console.error('Error in location search:', error);
 		const fallbackResults = await searchLocations(query, 5);
@@ -59,6 +90,7 @@ export async function searchLocationsWithContext(
 	}
 }
 
+// Keeping rankLocations exports for any future use, but they are not used in the dual-search path.
 export async function searchAndRankLocations(
 	query: string,
 	userLocation: UserLocation | null,
@@ -168,11 +200,33 @@ function isPrefixMatch(result: NominatimResult, query: string): boolean {
 function isCountryMatch(result: NominatimResult, userLocation: UserLocation | null): boolean {
 	if (!userLocation) return false;
 
-	const target = (userLocation.countryCode || userLocation.country || '').toLowerCase();
+	const targetRaw = (userLocation.countryCode || userLocation.country || '').toLowerCase();
+	const target = normalizeCountry(targetRaw);
 	if (!target) return false;
 
 	const resultCountry =
-		result.address?.country_code?.toLowerCase() || result.address?.country?.toLowerCase() || '';
+		result.address?.country_code?.toLowerCase() ||
+		result.address?.country?.toLowerCase() ||
+		'';
 
-	return Boolean(resultCountry) && resultCountry === target;
+	if (resultCountry && resultCountry === target) {
+		return true;
+	}
+
+	// Fallback: check display_name tail
+	if (result.display_name) {
+		const tail = result.display_name.split(',').pop()?.trim().toLowerCase() || '';
+		if (tail === target || tail.endsWith(target)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function normalizeCountry(value: string): string {
+	if (!value) return '';
+	const v = value.toLowerCase();
+	if (v === 'uk' || v === 'gb' || v === 'gbr' || v === 'united kingdom') return 'united kingdom';
+	return v;
 }

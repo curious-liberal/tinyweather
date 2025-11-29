@@ -3,7 +3,6 @@
 	import { onMount } from 'svelte';
 	import {
 		searchLocations,
-		rankLocations,
 		fetchWeatherData,
 		processWeatherData,
 		interpretWeather
@@ -67,8 +66,8 @@
 	// Tone change debounce
 	let toneChangeTimer: ReturnType<typeof setTimeout> | null = null;
 
-	// Cache raw search results per query for quick reranking when location arrives
-	const rawSearchCache = new Map<string, NominatimResult[]>();
+	// Cache combined search results per query + locale
+	const searchResultCache = new Map<string, { suggestions: string[]; coords: string[][] }>();
 	let lastSearchQuery = '';
 
 	const debounceSearch = () => {
@@ -85,24 +84,16 @@
 
 			try {
 				lastSearchQuery = query;
-				const cacheKey = query.toLowerCase();
+				const cacheKey = buildCacheKey(query, userLocation);
 
-				// Use cached raw results when available to avoid refetching
-				let rawResults = rawSearchCache.get(cacheKey);
-
-				if (!rawResults) {
-					rawResults = await searchLocations(query, 8);
-					rawSearchCache.set(cacheKey, rawResults);
+				const cached = searchResultCache.get(cacheKey);
+				if (cached) {
+					suggestions = cached.suggestions;
+					suggestionsCoords = cached.coords;
+					return;
 				}
 
-				const ranked = rankLocations(rawResults, query, userLocation);
-				const combinedResults = ranked.slice(0, 5);
-
-				// Bail if a newer search took over
-				if (fetchId !== currentId) return;
-
-				suggestions = combinedResults.map((i: NominatimResult) => i.display_name);
-				suggestionsCoords = combinedResults.map((i: NominatimResult) => [i.lat, i.lon]);
+				await runSearch(query, userLocation, currentId, cacheKey);
 			} catch (error) {
 				console.error('Error in debounced search:', error);
 				// Fallback to original search
@@ -115,20 +106,23 @@
 
 	$effect(debounceSearch);
 
-	// If location arrives after we already searched, rerank locally without refetching
+	// If location arrives after we already searched, rerun with context
 	$effect(() => {
 		if (!userLocation) return;
 		if (lastSearchQuery.length < 3) return;
 		if (lastSearchQuery !== query) return;
 
-		const rawResults = rawSearchCache.get(lastSearchQuery.toLowerCase());
-		if (!rawResults) return;
+		const cacheKey = buildCacheKey(lastSearchQuery, userLocation);
+		if (searchResultCache.has(cacheKey)) return;
 
-		const ranked = rankLocations(rawResults, lastSearchQuery, userLocation);
-		const combinedResults = ranked.slice(0, 5);
-
-		suggestions = combinedResults.map((i: NominatimResult) => i.display_name);
-		suggestionsCoords = combinedResults.map((i: NominatimResult) => [i.lat, i.lon]);
+		(async () => {
+			try {
+				const currentId = ++fetchId;
+				await runSearch(lastSearchQuery, userLocation, currentId, cacheKey);
+			} catch (error) {
+				console.warn('Re-run with location failed:', error);
+			}
+		})();
 	});
 
 	const handleSuggestionSelect = async (index: number) => {
@@ -289,6 +283,90 @@
 				console.warn('Geolocation failed:', error);
 			});
 	});
+
+	const warmWeatherCache = async (result: NominatimResult) => {
+		const lat = parseFloat(result.lat);
+		const lon = parseFloat(result.lon);
+		if (Number.isNaN(lat) || Number.isNaN(lon)) return;
+
+		// Skip if already cached
+		if (getCachedWeatherData(lat, lon)) return;
+
+		try {
+			const weatherData = await fetchWeatherData(lat, lon);
+			const processed = processWeatherData(weatherData);
+			setCachedWeatherData(result.display_name, lat, lon, processed);
+		} catch (error) {
+			console.warn('Warm cache failed:', error);
+		}
+	};
+
+	const buildCombined = (local: NominatimResult[], global: NominatimResult[]): NominatimResult[] => {
+		const topLocal = local.slice(0, 3);
+		const topGlobal = global.slice(0, 2);
+
+		const combined = [...topLocal, ...topGlobal];
+
+		if (combined.length >= 5) return combined.slice(0, 5);
+
+		const localExtras = local.slice(3);
+		const globalExtras = global.slice(2);
+
+		for (const item of [...localExtras, ...globalExtras]) {
+			if (combined.length >= 5) break;
+			combined.push(item);
+		}
+
+		return combined;
+	};
+
+	const buildCacheKey = (text: string, location: UserLocation | null): string => {
+		const localeKey = location?.countryCode || location?.country || 'global';
+		return `${text.toLowerCase()}::${localeKey.toLowerCase()}`;
+	};
+
+	const runSearch = async (
+		text: string,
+		location: UserLocation | null,
+		currentId: number,
+		cacheKey: string
+	) => {
+		const country = location?.country || location?.countryCode || '';
+		const localQuery = country ? `${text}, ${country}` : null;
+
+		const localPromise = localQuery ? searchLocations(localQuery, 5) : Promise.resolve([]);
+		const globalPromise = searchLocations(text, 5);
+
+		let localResults: NominatimResult[] = [];
+
+		// Early local-first update
+		localPromise.then((local) => {
+			if (fetchId !== currentId) return;
+			localResults = local;
+			if (local.length === 0) return;
+			const earlyCombined = buildCombined(localResults, []);
+			suggestions = earlyCombined.map((i: NominatimResult) => i.display_name);
+			suggestionsCoords = earlyCombined.map((i: NominatimResult) => [i.lat, i.lon]);
+		});
+
+		const [local, global] = await Promise.all([localPromise, globalPromise]);
+		if (fetchId !== currentId) return;
+
+		localResults = local;
+		const combinedResults = buildCombined(localResults, global);
+
+		suggestions = combinedResults.map((i: NominatimResult) => i.display_name);
+		suggestionsCoords = combinedResults.map((i: NominatimResult) => [i.lat, i.lon]);
+
+		searchResultCache.set(cacheKey, {
+			suggestions,
+			coords: suggestionsCoords
+		});
+
+		if (combinedResults[0]) {
+			warmWeatherCache(combinedResults[0]);
+		}
+	};
 </script>
 
 <div class="search-container">

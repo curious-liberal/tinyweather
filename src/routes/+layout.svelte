@@ -6,6 +6,8 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="preconnect" href="https://nominatim.openstreetmap.org" />
+	<link rel="preconnect" href="https://api.open-meteo.com" />
 </svelte:head>
 
 {@render children()}
