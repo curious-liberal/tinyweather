@@ -18,84 +18,106 @@
 	const hour = new Date().getHours();
 	const isNight = hour >= 20 || hour <= 7;
 
-	let initialGradient: string;
-	if (isNight) {
-		// Night: clean dark gradient
-		initialGradient = 'linear-gradient(135deg, #2C3E50 0%, #191970 100%)';
-	} else {
+let initialGradient: string;
+if (isNight) {
+	// Night: clean dark gradient
+	initialGradient = 'linear-gradient(135deg, #2C3E50 0%, #191970 100%)';
+} else {
 		// Day: clean bright gradient
 		initialGradient = 'linear-gradient(135deg, #87CEEB 0%, #FFE4B5 100%)';
-	}
+}
 
-	let currentGradient = $state(initialGradient);
-	let isTransitioning = $state(false);
+	let gradientA = $state(initialGradient);
+	let gradientB = $state(initialGradient);
+	let activeLayer: 'a' | 'b' = $state('a');
+	const fadeDuration = 1800;
 
 	const handleGradientChange = (gradient: { background: string; accent: string }) => {
-		isTransitioning = true;
-
-		// Small delay to ensure CSS transition starts smoothly
-		requestAnimationFrame(() => {
-			currentGradient = gradient.background;
-		});
-
-		// Reset transitioning state after transition completes
-		setTimeout(() => {
-			isTransitioning = false;
-		}, 3000);
+		if (activeLayer === 'a') {
+			gradientB = gradient.background;
+			activeLayer = 'b';
+		} else {
+			gradientA = gradient.background;
+			activeLayer = 'a';
+		}
 	};
 </script>
 
-<div
-	class="wrapper"
-	class:transitioning={isTransitioning}
-	style="--current-gradient: {currentGradient}"
->
-	<div class="header">
-		<h1 class="title">TinyWeather</h1>
-		<p class="subtitle">AI-powered weather with personality</p>
+<div class="wrapper">
+	<div
+		class="bg bg-a"
+		style="background: {gradientA}; opacity: {activeLayer === 'a' ? 1 : 0}; transition-duration: {fadeDuration}ms;"
+	></div>
+	<div
+		class="bg bg-b"
+		style="background: {gradientB}; opacity: {activeLayer === 'b' ? 1 : 0}; transition-duration: {fadeDuration}ms;"
+	></div>
+
+	<div class="content">
+		<div class="header">
+			<h1 class="title">TinyWeather</h1>
+			<p class="subtitle">AI-powered weather with personality</p>
+		</div>
+		<Searchbar
+			{placeholderSuggestions}
+			searchIcon="left"
+			onGradientChange={handleGradientChange}
+			onSearchLogged={updatePlaceholderSuggestions}
+		/>
 	</div>
-	<Searchbar
-		{placeholderSuggestions}
-		searchIcon="left"
-		onGradientChange={handleGradientChange}
-		onSearchLogged={updatePlaceholderSuggestions}
-	/>
 </div>
 
 <style>
 	.wrapper {
 		min-height: 100vh;
 		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: flex-start;
-		padding: 2em;
-		background: var(--current-gradient);
-		color: white;
-		transition: background 2s cubic-bezier(0.4, 0, 0.2, 1);
 		position: relative;
 		overflow: hidden;
 	}
 
-	.wrapper::before {
+	.bg {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition-property: opacity;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.bg::after {
 		content: '';
 		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		inset: 0;
 		background: radial-gradient(
 			circle at 20% 50%,
 			rgba(255, 255, 255, 0.03) 0%,
 			transparent 50%,
 			rgba(255, 255, 255, 0.01) 100%
 		);
-		pointer-events: none;
 		animation: subtleGlow 12s ease-in-out infinite alternate;
+		pointer-events: none;
 	}
 
-	.wrapper.transitioning {
-		transition: background 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	.content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		padding: 2em;
+		color: white;
+		position: relative;
+		z-index: 1;
+		width: 100%;
+	}
+
+	.content::before {
+		content: none;
+	}
+
+	/* Subtle glow stays on content layer */
+	.wrapper::before,
+	.wrapper::after {
+		background-blend-mode: normal;
 	}
 
 	.header {
@@ -154,10 +176,6 @@
 	}
 
 	@media (max-width: 768px) {
-		.wrapper {
-			padding: 1em;
-		}
-
 		.title {
 			font-size: 2.8em;
 			letter-spacing: -1px;
@@ -176,10 +194,6 @@
 	@media (max-width: 480px) {
 		.title {
 			font-size: 2.2em;
-		}
-
-		.wrapper {
-			padding: 0.8em;
 		}
 	}
 </style>
