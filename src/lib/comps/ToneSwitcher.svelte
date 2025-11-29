@@ -244,21 +244,29 @@
 
 	.current-tone {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 1em;
 		color: white;
-		text-align: center;
+		text-align: left;
+		width: 100%;
+		max-width: 500px;
+		margin: 0 auto;
 	}
 
 	.tone-emoji {
 		font-size: 2.5em;
 		animation: float 3s ease-in-out infinite;
+		flex-shrink: 0;
+		line-height: 1;
 	}
 
 	.tone-info {
 		display: flex;
 		flex-direction: column;
-		gap: 0.2em;
+		gap: 0.3em;
+		flex: 1;
+		min-width: 0;
+		padding-top: 0.1em;
 	}
 
 	.tone-name {
@@ -266,13 +274,17 @@
 		font-size: 1.2em;
 		font-weight: 600;
 		letter-spacing: 0.5px;
+		line-height: 1.3;
 	}
 
 	.tone-description {
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-		font-size: 0.9em;
+		font-size: 0.85em;
 		opacity: 0.8;
 		font-weight: 400;
+		line-height: 1.4;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
 	}
 
 	.swipe-hint {
@@ -361,6 +373,16 @@
 			flex-direction: column;
 			text-align: center;
 			gap: 0.5em;
+			align-items: center;
+		}
+
+		.tone-info {
+			text-align: center;
+			padding-top: 0;
+		}
+
+		.tone-description {
+			font-size: 0.8em;
 		}
 	}
 </style>

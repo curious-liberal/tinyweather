@@ -60,9 +60,71 @@ export const tones: Tone[] = [
 	{
 		id: 'inpc',
 		name: 'INPC',
-		description: 'Cat-based weather reading',
-		prompt:
-			'weather report in the style of the show: short, observational, slightly amused. Start with a simple intro (“Time for the weather”, “Right then, weather”, etc.). George the cat gives the temperature with one tiny action (a blink, head turn, ear twitch, nose move). Use simple terms like “less than warm”, “not warm”. Tree of Truth only for wind levels (“low wind”, “bit windy”, “significant wind”, “verging on moderate”). Include at most one small optional extra detail (a seagull, neighbour window glint, a drifting bag). Describe the sky simply (“bit grey”, “mottled”, “blue-ish”, “grey with white bits”). End with a quiet sky verdict (“yeah… we’ll go with grey-ish”, “mmm actually a grey-ish blue”). Finish with “There you go, that’s the weather.”. Stay grounded, no surrealism, no rambling.',
+		description: 'Real-time, cat-based weather check in the style of the show',
+		prompt: `
+	Speak like the podcast: slow, casual, reacting live while looking around. Present tense only. No imagination, no invented items, no metaphors, no descriptions that sound written. Short lines and small pauses (“yeah…”, “right…”, “okay…”). George gives the temperature through one tiny action he is doing right now (ear move, blink, little head turn). Use only “less than warm” or “not warm.” No numbers and no predictions. Tree of Truth only for wind: “low wind”, “bit windy”, “significant wind”, or “moving a fair bit.” Sky kept simple: “grey”, “bit grey”, “grey with some white bits”, “blue-ish”, “mottled.” At most one optional extra if it is extremely ordinary and happening right now (a seagull sitting, neighbour’s window glint, a bag drifting). Speak loosely in fragments. No tidy sentences. End with a small uncertain verdict (“yeah… we’ll call it grey-ish”) then “There you go, that’s the weather.”
+
+	Follow the style shown in these examples:
+
+	EXAMPLE 1:
+	Right… weather.
+	George is doing a tiny ear move there… yeah, so, less than warm.
+	Tree of Truth’s just… moving a bit. Not loads.
+	Sky’s kind of grey… bit of white in it.
+	Yeah… we’ll call it grey-ish.
+	There you go, that’s the weather.
+
+	EXAMPLE 2:
+	Okay… weather time.
+	George is looking down… so that’s a not warm.
+	Tree of Truth… low wind, pretty still.
+	Sky’s… yeah… just grey.
+	We’ll go with grey-ish.
+	There you go, that’s the weather.
+
+	EXAMPLE 3:
+	Right then… weather.
+	George blinked… that’s less than warm.
+	Tree of Truth’s got a bit of movement… just a bit.
+	Sky’s blue-ish… little bit of cloud.
+	Yeah… blue-ish.
+	There you go, that’s the weather.
+
+	EXAMPLE 4:
+	Time for the weather.
+	George is doing the slow head turn… so, not warm.
+	Tree of Truth… hardly moving, low wind.
+	Sky’s… mmm… kind of grey with some white bits.
+	Yeah… grey with white bits.
+	There you go, that’s the weather.
+
+	EXAMPLE 5:
+	Weather.
+	George is fully asleep but, yeah, that’s still less than warm.
+	Tree of Truth’s moving a fair bit actually…
+	Sky’s just… grey.
+	We’ll say grey-ish.
+	There you go, that’s the weather.
+
+	Rare optional extras (use sparingly):
+
+	EXAMPLE 6:
+	Right… weather.
+	George is giving a tiny blink… less than warm.
+	Tree of Truth… bit windy.
+	There’s a seagull just sitting on the roof.
+	Sky’s grey-ish blue… yeah… we’ll say grey-blue.
+	There you go, that’s the weather.
+
+	EXAMPLE 7:
+	Okay… weather.
+	George is doing a small ear twitch… not warm.
+	Tree of Truth’s moving a fair bit…
+	Oh—bag drifting across the garden there.
+	Sky’s grey… bit of white.
+	Yeah… grey-ish.
+	There you go, that’s the weather.
+	`,
 		emoji: '🐈‍⬛'
 	},
 	{

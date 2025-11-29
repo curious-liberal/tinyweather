@@ -2,11 +2,37 @@
 	import { onMount } from 'svelte';
 	import Searchbar from '$lib/comps/SearchBar.svelte';
 	import { getPopularSearches } from '$lib/stores/searchHistory';
+	import confetti from 'canvas-confetti';
 
 	let placeholderSuggestions = $state(['London', 'Glasgow', 'Birmingham', 'Norwich', 'Malta']);
 
 	const updatePlaceholderSuggestions = () => {
 		placeholderSuggestions = getPopularSearches(5);
+	};
+
+	// Triple tap confetti
+	let tapCount = $state(0);
+	let tapTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	const handleFooterClick = () => {
+		tapCount++;
+
+		if (tapTimeout) clearTimeout(tapTimeout);
+
+		if (tapCount === 3) {
+			// Trigger confetti!
+			confetti({
+				particleCount: 100,
+				spread: 70,
+				origin: { y: 0.9 }
+			});
+			tapCount = 0;
+		} else {
+			// Reset tap count after 1 second
+			tapTimeout = setTimeout(() => {
+				tapCount = 0;
+			}, 1000);
+		}
 	};
 
 	onMount(() => {
@@ -64,6 +90,9 @@ if (isNight) {
 			onGradientChange={handleGradientChange}
 			onSearchLogged={updatePlaceholderSuggestions}
 		/>
+		<footer class="footer" onclick={handleFooterClick}>
+			Made with love by Curiio
+		</footer>
 	</div>
 </div>
 
@@ -155,6 +184,41 @@ if (isNight) {
 		text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 	}
 
+	.footer {
+		margin-top: auto;
+		padding: 2em 1em 1.5em;
+		text-align: center;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		font-size: 0.9em;
+		color: rgba(255, 255, 255, 0.7);
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+		cursor: pointer;
+		user-select: none;
+		-webkit-user-select: none;
+		transition: all 0.3s ease;
+		animation: gentleFloat 3s ease-in-out infinite;
+	}
+
+	.footer:hover {
+		color: rgba(255, 255, 255, 0.9);
+		transform: translateY(-2px);
+		animation-play-state: paused;
+	}
+
+	.footer:active {
+		transform: translateY(0);
+	}
+
+	@keyframes gentleFloat {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-4px);
+		}
+	}
+
 	@keyframes subtleGlow {
 		0% {
 			opacity: 0.4;
@@ -192,6 +256,11 @@ if (isNight) {
 
 		.header {
 			margin-bottom: 2em;
+		}
+
+		.footer {
+			padding: 1.5em 1em 1em;
+			font-size: 0.85em;
 		}
 	}
 

@@ -21,8 +21,42 @@
 	let customQuestion = $state('');
 	let isAnswering = $state(false);
 	let followUpAnswer = $state('');
+	let customInputContainer: HTMLDivElement | null = $state(null);
+	let customInputElement: HTMLInputElement | null = $state(null);
+	let answerContainer: HTMLDivElement | null = $state(null);
 
 	let formattedAnswer = $derived(followUpAnswer ? parseMarkdown(followUpAnswer) : '');
+
+	// Scroll to and focus the custom input when it opens
+	$effect(() => {
+		if (showCustomInput && customInputContainer) {
+			// Small delay to ensure DOM is updated
+			setTimeout(() => {
+				// Use 'start' on mobile to leave room for keyboard
+				const isMobile = window.innerWidth <= 768;
+				customInputContainer?.scrollIntoView({
+					behavior: 'smooth',
+					block: isMobile ? 'start' : 'center'
+				});
+				// Focus the input after scrolling
+				setTimeout(() => {
+					customInputElement?.focus();
+				}, 300);
+			}, 100);
+		}
+	});
+
+	// Scroll to answer when it appears
+	$effect(() => {
+		if (followUpAnswer && answerContainer) {
+			setTimeout(() => {
+				answerContainer?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'nearest'
+				});
+			}, 100);
+		}
+	});
 
 	const handleSuggestionClick = async (suggestion: FollowUpSuggestion) => {
 		if (suggestion.id === 'custom') {
@@ -90,9 +124,10 @@
 	{/if}
 
 	{#if showCustomInput}
-		<div class="custom-input-container">
+		<div class="custom-input-container" bind:this={customInputContainer}>
 			<div class="custom-input-wrapper">
 				<input
+					bind:this={customInputElement}
 					bind:value={customQuestion}
 					placeholder="Ask about the weather..."
 					class="custom-input"
@@ -117,7 +152,7 @@
 	{/if}
 
 	{#if isAnswering}
-		<div class="answer-container">
+		<div class="answer-container" bind:this={answerContainer}>
 			<div class="loading-dots">
 				<div class="dot"></div>
 				<div class="dot"></div>
@@ -125,7 +160,7 @@
 			</div>
 		</div>
 	{:else if followUpAnswer}
-		<div class="answer-container">
+		<div class="answer-container" bind:this={answerContainer}>
 			<div class="answer-content">
 				<div class="answer-text">{@html formattedAnswer}</div>
 				<button onclick={closeAnswer} class="close-answer">×</button>
@@ -141,6 +176,7 @@
 		max-width: 600px;
 		padding: 0 0.5em;
 		scroll-margin-top: 80px;
+		padding-bottom: 2em;
 	}
 
 	.suggestions-grid {
@@ -430,6 +466,17 @@
 		.suggestions-grid {
 			grid-template-columns: repeat(2, 1fr);
 			gap: 0.65em;
+			width: 100%;
+		}
+
+		/* Reset all desktop positioning for mobile */
+		.suggestion-tag:nth-child(1),
+		.suggestion-tag:nth-child(2),
+		.suggestion-tag:nth-child(3),
+		.suggestion-tag:nth-child(4),
+		.suggestion-tag:nth-child(5) {
+			grid-column: auto;
+			justify-self: stretch;
 		}
 
 		/* Hide suggestions 4 and 5 on mobile (show only 3 total) */
@@ -437,22 +484,22 @@
 			display: none;
 		}
 
-		/* Mobile: 2 on top row, "Something else" centered on bottom row spanning both columns */
+		/* Mobile: 3rd suggestion (Something else) spans both columns and is centered */
 		.suggestion-tag:nth-child(3) {
 			grid-column: 1 / 3;
 			justify-self: center;
+			width: 100%;
 			max-width: 280px;
-		}
-
-		/* Reset desktop positioning */
-		.suggestion-tag:nth-child(4),
-		.suggestion-tag:nth-child(5) {
-			grid-column: auto;
 		}
 
 		.follow-up-container {
 			margin-top: 1.25em;
 			padding: 0 0.25em;
+			padding-bottom: 20vh;
+		}
+
+		.custom-input-container {
+			margin-bottom: 2em;
 		}
 
 		.custom-input-wrapper {

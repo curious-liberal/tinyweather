@@ -7,6 +7,10 @@
 <svelte:head>
 	<title>Tiny Weather</title>
 	<meta
+		name="viewport"
+		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+	/>
+	<meta
 		name="description"
 		content="Tiny Weather — fast AI-powered weather summaries with personality, tone control, and smart follow-ups."
 	/>
@@ -30,6 +34,8 @@
 		font-family:
 			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
 			'Helvetica Neue', sans-serif;
+		touch-action: pan-x pan-y;
+		-webkit-text-size-adjust: 100%;
 	}
 
 	:global(.emoji) {

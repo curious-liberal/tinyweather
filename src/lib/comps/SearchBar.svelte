@@ -63,8 +63,9 @@
 	let typingTimer: ReturnType<typeof setTimeout> | null = null;
 	let fetchId: number = 0;
 
-	// Tone change debounce
+	// Tone change debounce and request tracking
 	let toneChangeTimer: ReturnType<typeof setTimeout> | null = null;
+	let toneRequestId: number = 0;
 
 	// Cache combined search results per query + locale
 	const searchResultCache = new Map<string, { suggestions: string[]; coords: string[][] }>();
@@ -127,6 +128,16 @@
 
 	const handleSuggestionSelect = async (index: number) => {
 		console.log('Selecting location...');
+
+		// Clear any pending search timers to prevent race conditions
+		if (typingTimer) {
+			clearTimeout(typingTimer);
+			typingTimer = null;
+		}
+
+		// Increment fetchId to invalidate any in-flight search requests
+		fetchId++;
+
 		isLoadingWeather = true;
 		weatherSummary = '';
 		followUpSuggestions = [];
@@ -137,6 +148,7 @@
 		const coordinates = { lat: parseFloat(lat), lon: parseFloat(lon) };
 		currentCoordinates = coordinates;
 		suggestions = [];
+		query = ''; // Clear query to prevent further searches
 
 		try {
 			// Check cache first
@@ -204,12 +216,21 @@
 			clearTimeout(toneChangeTimer);
 		}
 
+		// Increment request ID to track this specific request
+		const currentRequestId = ++toneRequestId;
+
 		// Set loading state immediately for UI feedback
 		isLoadingWeather = true;
 		loadingType = 'response';
 
 		// Debounce the actual API call
 		toneChangeTimer = setTimeout(async () => {
+			// Check if this is still the latest request
+			if (currentRequestId !== toneRequestId) {
+				console.log('Tone request outdated, ignoring');
+				return;
+			}
+
 			try {
 				const tone = getCurrentTone($currentToneIndex);
 
@@ -218,18 +239,27 @@
 
 				if (cachedResponse) {
 					console.log('Using cached tone response');
-					weatherSummary = cachedResponse;
+					// Verify this is still the latest request before updating
+					if (currentRequestId === toneRequestId) {
+						weatherSummary = cachedResponse;
+					}
 				} else {
 					console.log('Generating new tone response');
 					const summary = await interpretWeather(weatherData, tone);
-					weatherSummary = summary;
-					// Cache the new response
-					setCachedResponse(coords.lat, coords.lon, tone.id, summary);
+					// Only update if this is still the latest request
+					if (currentRequestId === toneRequestId) {
+						weatherSummary = summary;
+						// Cache the new response
+						setCachedResponse(coords.lat, coords.lon, tone.id, summary);
+					}
 				}
 			} catch (error) {
 				console.error('Error updating tone:', error);
 			} finally {
-				isLoadingWeather = false;
+				// Only clear loading if this is still the latest request
+				if (currentRequestId === toneRequestId) {
+					isLoadingWeather = false;
+				}
 			}
 		}, 500); // 500ms debounce delay
 	};
