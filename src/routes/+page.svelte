@@ -79,6 +79,10 @@ if (isNight) {
 		style="background: {gradientB}; opacity: {activeLayer === 'b' ? 1 : 0}; transition-duration: {fadeDuration}ms;"
 	></div>
 
+	{#if isNight}
+		<div class="stars"></div>
+	{/if}
+
 	<div class="content">
 		<div class="header">
 			<h1 class="title">TinyWeather</h1>
@@ -125,6 +129,93 @@ if (isNight) {
 		);
 		animation: subtleGlow 12s ease-in-out infinite alternate;
 		pointer-events: none;
+	}
+
+	.stars {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 0;
+		overflow: hidden;
+	}
+
+	.stars::before,
+	.stars::after {
+		content: '';
+		position: absolute;
+		width: 1.5px;
+		height: 1.5px;
+		background: white;
+		border-radius: 50%;
+		box-shadow:
+			15vw 20vh 0 0 rgba(255, 255, 255, 0.7),
+			30vw 10vh 0 0 rgba(255, 255, 255, 0.8),
+			45vw 25vh 0 0 rgba(255, 255, 255, 0.6),
+			60vw 15vh 0 0 rgba(255, 255, 255, 0.7),
+			75vw 30vh 0 0 rgba(255, 255, 255, 0.5),
+			85vw 5vh 0 0 rgba(255, 255, 255, 0.8),
+			10vw 40vh 0 0 rgba(255, 255, 255, 0.6),
+			25vw 50vh 0 0 rgba(255, 255, 255, 0.7),
+			40vw 45vh 0 0 rgba(255, 255, 255, 0.8),
+			55vw 55vh 0 0 rgba(255, 255, 255, 0.6),
+			70vw 60vh 0 0 rgba(255, 255, 255, 0.7),
+			90vw 35vh 0 0 rgba(255, 255, 255, 0.5),
+			5vw 70vh 0 0 rgba(255, 255, 255, 0.7),
+			20vw 65vh 0 0 rgba(255, 255, 255, 0.8),
+			35vw 75vh 0 0 rgba(255, 255, 255, 0.6),
+			50vw 80vh 0 0 rgba(255, 255, 255, 0.7),
+			65vw 70vh 0 0 rgba(255, 255, 255, 0.8),
+			80vw 85vh 0 0 rgba(255, 255, 255, 0.6),
+			12vw 12vh 0 0 rgba(255, 255, 255, 0.7),
+			38vw 8vh 0 0 rgba(255, 255, 255, 0.6),
+			62vw 38vh 0 0 rgba(255, 255, 255, 0.8),
+			88vw 58vh 0 0 rgba(255, 255, 255, 0.5),
+			18vw 88vh 0 0 rgba(255, 255, 255, 0.7),
+			48vw 28vh 0 0 rgba(255, 255, 255, 0.6),
+			78vw 18vh 0 0 rgba(255, 255, 255, 0.8),
+			8vw 48vh 0 0 rgba(255, 255, 255, 0.7),
+			33vw 63vh 0 0 rgba(255, 255, 255, 0.6),
+			58vw 33vh 0 0 rgba(255, 255, 255, 0.8),
+			83vw 73vh 0 0 rgba(255, 255, 255, 0.5),
+			28vw 83vh 0 0 rgba(255, 255, 255, 0.7);
+		animation: twinkle 8s ease-in-out infinite;
+	}
+
+	.stars::after {
+		width: 1px;
+		height: 1px;
+		box-shadow:
+			22vw 17vh 0 0 rgba(255, 255, 255, 0.5),
+			42vw 27vh 0 0 rgba(255, 255, 255, 0.6),
+			52vw 7vh 0 0 rgba(255, 255, 255, 0.4),
+			67vw 37vh 0 0 rgba(255, 255, 255, 0.5),
+			82vw 47vh 0 0 rgba(255, 255, 255, 0.4),
+			92vw 22vh 0 0 rgba(255, 255, 255, 0.6),
+			17vw 52vh 0 0 rgba(255, 255, 255, 0.5),
+			37vw 62vh 0 0 rgba(255, 255, 255, 0.4),
+			47vw 42vh 0 0 rgba(255, 255, 255, 0.6),
+			72vw 72vh 0 0 rgba(255, 255, 255, 0.5),
+			87vw 57vh 0 0 rgba(255, 255, 255, 0.4),
+			2vw 82vh 0 0 rgba(255, 255, 255, 0.6),
+			27vw 77vh 0 0 rgba(255, 255, 255, 0.5),
+			57vw 87vh 0 0 rgba(255, 255, 255, 0.4),
+			77vw 67vh 0 0 rgba(255, 255, 255, 0.6),
+			97vw 92vh 0 0 rgba(255, 255, 255, 0.5),
+			14vw 14vh 0 0 rgba(255, 255, 255, 0.4),
+			44vw 24vh 0 0 rgba(255, 255, 255, 0.5),
+			64vw 44vh 0 0 rgba(255, 255, 255, 0.6),
+			84vw 64vh 0 0 rgba(255, 255, 255, 0.4);
+		animation: twinkle 6s ease-in-out infinite 2s;
+	}
+
+	@keyframes twinkle {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.6;
+		}
 	}
 
 	.content {

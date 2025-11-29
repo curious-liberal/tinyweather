@@ -46,11 +46,14 @@ Be clear, human-readable, and concise. Do not include thinking tags, only weathe
 
 	const json = await response.json();
 
-	// Remove <think>...</think> blocks if present
-	const weatherSummary = (json.output_text || json.choices?.[0]?.message?.content || '').replace(
-		/<think>[\s\S]*?<\/think>/gi,
-		''
-	);
+	// Remove <think>...</think> blocks if present (with any variations)
+	const rawText = json.output_text || json.choices?.[0]?.message?.content || '';
+	const weatherSummary = rawText
+		.replace(/<think>[\s\S]*?<\/think>/gi, '')
+		.replace(/<thinking>[\s\S]*?<\/thinking>/gi, '')
+		.replace(/\[think\][\s\S]*?\[\/think\]/gi, '')
+		.replace(/\[thinking\][\s\S]*?\[\/thinking\]/gi, '')
+		.trim();
 
 	return weatherSummary;
 }
