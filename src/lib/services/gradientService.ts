@@ -9,97 +9,97 @@ export interface Gradient {
 export const weatherGradients: Record<string, Gradient> = {
 	// Sunny & Clear
 	clear: {
-		background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-		accent: '#667eea',
+		background: 'linear-gradient(135deg, #87CEEB 0%, #FFE4B5 100%)',
+		accent: '#87CEEB',
 		name: 'Clear Sky'
 	},
 	sunny: {
-		background: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
-		accent: '#fcb69f',
+		background: 'linear-gradient(135deg, #FFD700 0%, #FF6347 100%)',
+		accent: '#FFD700',
 		name: 'Sunny'
 	},
 
 	// Cloudy
 	cloudy: {
-		background: 'linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%)',
-		accent: '#34495e',
+		background: 'linear-gradient(135deg, #708090 0%, #2F4F4F 100%)',
+		accent: '#708090',
 		name: 'Cloudy'
 	},
 	partlyCloudy: {
-		background: 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)',
-		accent: '#0984e3',
+		background: 'linear-gradient(135deg, #87CEFA 0%, #4682B4 100%)',
+		accent: '#87CEFA',
 		name: 'Partly Cloudy'
 	},
 
 	// Rainy
 	rainy: {
-		background: 'linear-gradient(135deg, #2c3e50 0%, #3c6382 100%)',
-		accent: '#3c6382',
+		background: 'linear-gradient(135deg, #4682B4 0%, #191970 100%)',
+		accent: '#4682B4',
 		name: 'Rainy'
 	},
 	lightRain: {
-		background: 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)',
-		accent: '#0984e3',
+		background: 'linear-gradient(135deg, #87CEEB 0%, #6495ED 100%)',
+		accent: '#87CEEB',
 		name: 'Light Rain'
 	},
 	heavyRain: {
-		background: 'linear-gradient(135deg, #2d3436 0%, #636e72 100%)',
-		accent: '#636e72',
+		background: 'linear-gradient(135deg, #36454F 0%, #2C3E50 100%)',
+		accent: '#36454F',
 		name: 'Heavy Rain'
 	},
 
 	// Stormy
 	stormy: {
-		background: 'linear-gradient(135deg, #2d3436 0%, #000000 100%)',
-		accent: '#636e72',
+		background: 'linear-gradient(135deg, #2C3E50 0%, #1C1C1C 100%)',
+		accent: '#4B0082',
 		name: 'Stormy'
 	},
 
 	// Snow
 	snowy: {
-		background: 'linear-gradient(135deg, #ddd6f3 0%, #faaca8 100%)',
-		accent: '#a29bfe',
+		background: 'linear-gradient(135deg, #E6E6FA 0%, #B0C4DE 100%)',
+		accent: '#E6E6FA',
 		name: 'Snowy'
 	},
 	blizzard: {
-		background: 'linear-gradient(135deg, #b2bec3 0%, #ddd6f3 100%)',
-		accent: '#74b9ff',
+		background: 'linear-gradient(135deg, #C0C0C0 0%, #708090 100%)',
+		accent: '#C0C0C0',
 		name: 'Blizzard'
 	},
 
 	// Special conditions
 	foggy: {
-		background: 'linear-gradient(135deg, #bdc3c7 0%, #ecf0f1 100%)',
-		accent: '#95a5a6',
+		background: 'linear-gradient(135deg, #D3D3D3 0%, #A9A9A9 100%)',
+		accent: '#D3D3D3',
 		name: 'Foggy'
 	},
 	windy: {
-		background: 'linear-gradient(135deg, #81ecec 0%, #6c5ce7 100%)',
-		accent: '#74b9ff',
+		background: 'linear-gradient(135deg, #87CEEB 0%, #4682B4 100%)',
+		accent: '#87CEEB',
 		name: 'Windy'
 	},
 
 	// Time-based (fallback)
 	dawn: {
-		background: 'linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%)',
-		accent: '#e17055',
+		background: 'linear-gradient(135deg, #FFB347 0%, #FF69B4 100%)',
+		accent: '#FFB347',
 		name: 'Dawn'
 	},
 	dusk: {
-		background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)',
-		accent: '#5f3dc4',
+		background: 'linear-gradient(135deg, #DDA0DD 0%, #9370DB 100%)',
+		accent: '#DDA0DD',
 		name: 'Dusk'
 	},
 	night: {
-		background: 'linear-gradient(135deg, #2d3436 0%, #636e72 100%)',
-		accent: '#74b9ff',
+		background: 'linear-gradient(135deg, #191970 0%, #000080 100%)',
+		accent: '#191970',
 		name: 'Night'
 	},
 
-	// Default
+	// Default - much more appealing warm gradient
 	default: {
-		background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-		accent: '#667eea',
+		background: 'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%)',
+		accent: '#FF6B6B',
 		name: 'Weather'
 	}
 };

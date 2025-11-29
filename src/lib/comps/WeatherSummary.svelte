@@ -32,11 +32,11 @@
 			let messageIndex = 0;
 			loadingMessage = messages[messageIndex];
 
-			// Cycle through messages every 2 seconds
+			// Cycle through messages every 4 seconds
 			messageInterval = setInterval(() => {
 				messageIndex = (messageIndex + 1) % messages.length;
 				loadingMessage = messages[messageIndex];
-			}, 2000);
+			}, 4000);
 		} else {
 			if (messageInterval) {
 				clearInterval(messageInterval);

@@ -5,18 +5,34 @@ export async function searchLocations(query: string, limit: number = 3): Promise
 	const params = new URLSearchParams({
 		q: query,
 		format: 'jsonv2',
-		limit: limit.toString(),
+		limit: (limit * 2).toString(), // Get extra to filter from
 		addressdetails: '1',
-		'accept-language': 'en',
-		featureType: 'settlement', // Correct camelCase parameter
-		layer: 'address' // Exclude POIs (businesses)
+		'accept-language': 'en'
 	});
 
-	// Single clean search for settlements only
+	// Simple search without overly restrictive filters
 	const response = await fetch(`https://nominatim.openstreetmap.org/search?${params}`);
 	const results = await response.json();
 
-	return results;
+	// Basic filtering to remove obvious businesses/addresses
+	const filtered = results.filter((result: NominatimResult) => {
+		const displayName = result.display_name.toLowerCase();
+		const category = result.category?.toLowerCase() || '';
+
+		// Remove obvious businesses and addresses with numbers
+		const isNotBusiness = !displayName.includes('ltd') &&
+							  !displayName.includes('&') &&
+							  !displayName.includes('centre') &&
+							  !displayName.includes('shop') &&
+							  category !== 'shop' &&
+							  category !== 'amenity';
+
+		const isNotAddress = !displayName.match(/^\d+/); // Not starting with house number
+
+		return isNotBusiness && isNotAddress;
+	});
+
+	return filtered.slice(0, limit);
 }
 
 export async function searchLocationsWithContext(

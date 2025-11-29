@@ -73,7 +73,7 @@
 				<button
 					class="suggestion-tag"
 					onclick={() => handleSuggestionClick(suggestion)}
-					style="animation-delay: {index * 100}ms"
+					style="animation-delay: {index * 150}ms"
 				>
 					<span class="emoji">{suggestion.emoji}</span>
 					<span class="text">{suggestion.text}</span>
@@ -150,9 +150,9 @@
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		animation: slideInTag 0.6s ease-out forwards;
+		animation: bubbleGrow 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 		opacity: 0;
-		transform: translateY(20px);
+		transform: scale(0);
 	}
 
 	.suggestion-tag:hover {
@@ -320,10 +320,18 @@
 	.dot:nth-child(2) { animation-delay: 0.2s; }
 	.dot:nth-child(3) { animation-delay: 0.4s; }
 
-	@keyframes slideInTag {
-		to {
+	@keyframes bubbleGrow {
+		0% {
+			opacity: 0;
+			transform: scale(0);
+		}
+		70% {
 			opacity: 1;
-			transform: translateY(0);
+			transform: scale(1.1);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1);
 		}
 	}
 

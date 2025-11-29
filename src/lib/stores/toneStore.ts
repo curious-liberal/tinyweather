@@ -14,7 +14,7 @@ export const tones: Tone[] = [
 		id: 'funny',
 		name: 'Comedic',
 		description: 'Witty & humorous',
-		prompt: 'funny, witty weather report that includes some funny naughty innuendos. Imagine a comedian presenting the weather',
+		prompt: 'hilarious, cheeky weather report with brilliant British-style comparisons like "wind so strong it\'ll blow your eyebrows clean off", "as cold as your mum\'s heart on a dating app", or "as windy as your uncle\'s farts at Christmas". Be playfully rude, use funny analogies about family, relationships, everyday situations. Think pub comedian meets weather presenter',
 		emoji: '😄'
 	},
 	{

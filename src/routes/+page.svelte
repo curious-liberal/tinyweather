@@ -14,17 +14,32 @@
         updatePlaceholderSuggestions();
     });
 
-    let currentGradient = $state('linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+    // Simple day/night gradient
+    const hour = new Date().getHours();
+    const isNight = hour >= 20 || hour <= 7;
+
+    let initialGradient: string;
+    if (isNight) {
+        // Night: clean dark gradient
+        initialGradient = 'linear-gradient(135deg, #2C3E50 0%, #191970 100%)';
+    } else {
+        // Day: clean bright gradient
+        initialGradient = 'linear-gradient(135deg, #87CEEB 0%, #FFE4B5 100%)';
+    }
+
+    let currentGradient = $state(initialGradient);
     let isTransitioning = $state(false);
 
     const handleGradientChange = (gradient: {background: string, accent: string}) => {
         isTransitioning = true;
 
-        // Smooth transition after a short delay
+        // Immediate transition with smooth timing
+        currentGradient = gradient.background;
+
+        // Reset transitioning state after transition completes
         setTimeout(() => {
-            currentGradient = gradient.background;
             isTransitioning = false;
-        }, 300);
+        }, 2000);
     };
 </script>
 
@@ -73,7 +88,7 @@
     }
 
     .wrapper.transitioning {
-        transition: background 1s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: background 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .header {
