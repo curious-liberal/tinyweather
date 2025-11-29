@@ -43,7 +43,7 @@ async function fetchUserLocation(): Promise<UserLocation | null> {
 		const response = await fetch('https://ipapi.co/json/', {
 			method: 'GET',
 			headers: {
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			}
 		});
 
@@ -71,7 +71,6 @@ async function fetchUserLocation(): Promise<UserLocation | null> {
 
 		console.log('Detected user location:', location);
 		return location;
-
 	} catch (error) {
 		console.warn('Failed to get user location:', error);
 		return null;

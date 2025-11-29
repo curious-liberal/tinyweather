@@ -9,11 +9,13 @@ export function parseMarkdown(text: string): string {
 		.replace(/'/g, '&#x27;');
 
 	// Then apply markdown formatting
-	return escaped
-		// Bold: **text** or __text__
-		.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-		.replace(/__([^_]+)__/g, '<strong>$1</strong>')
-		// Italic: *text* or _text_
-		.replace(/\*([^*]+)\*/g, '<em>$1</em>')
-		.replace(/_([^_]+)_/g, '<em>$1</em>');
+	return (
+		escaped
+			// Bold: **text** or __text__
+			.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+			.replace(/__([^_]+)__/g, '<strong>$1</strong>')
+			// Italic: *text* or _text_
+			.replace(/\*([^*]+)\*/g, '<em>$1</em>')
+			.replace(/_([^_]+)_/g, '<em>$1</em>')
+	);
 }

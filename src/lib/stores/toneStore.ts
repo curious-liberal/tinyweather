@@ -14,7 +14,8 @@ export const tones: Tone[] = [
 		id: 'funny',
 		name: 'Comedic',
 		description: 'Witty & humorous',
-		prompt: 'hilarious, cheeky weather report with brilliant British-style comparisons like "wind so strong it\'ll blow your eyebrows clean off", "as cold as your mum\'s heart on a dating app", or "as windy as your uncle\'s farts at Christmas". Be playfully rude, use funny analogies about family, relationships, everyday situations. Think pub comedian meets weather presenter',
+		prompt:
+			'hilarious, cheeky weather report with brilliant British-style comparisons like "wind so strong it\'ll blow your eyebrows clean off", "as cold as your mum\'s heart on a dating app", or "as windy as your uncle\'s farts at Christmas". Be playfully rude, use funny analogies about family, relationships, everyday situations. Think pub comedian meets weather presenter',
 		emoji: '😄'
 	},
 	{
@@ -28,35 +29,40 @@ export const tones: Tone[] = [
 		id: 'poetic',
 		name: 'Poetic',
 		description: 'Artistic & lyrical',
-		prompt: 'poetic and artistic weather report using beautiful metaphors and lyrical language. Think of a poet describing nature',
+		prompt:
+			'poetic and artistic weather report using beautiful metaphors and lyrical language. Think of a poet describing nature',
 		emoji: '🎭'
 	},
 	{
 		id: 'dramatic',
 		name: 'Dramatic',
 		description: 'Epic & theatrical',
-		prompt: 'dramatic and theatrical weather report as if narrating an epic movie scene. Be cinematic and intense',
+		prompt:
+			'dramatic and theatrical weather report as if narrating an epic movie scene. Be cinematic and intense',
 		emoji: '🎬'
 	},
 	{
 		id: 'chill',
 		name: 'Chill',
 		description: 'Laid-back & casual',
-		prompt: 'super chill and laid-back weather report like a surfer or cool friend just hanging out. Use casual language',
+		prompt:
+			'super chill and laid-back weather report like a surfer or cool friend just hanging out. Use casual language',
 		emoji: '😎'
 	},
 	{
 		id: 'scientific',
 		name: 'Scientific',
 		description: 'Technical & analytical',
-		prompt: 'highly scientific and technical weather analysis with meteorological terminology and data-driven insights',
+		prompt:
+			'highly scientific and technical weather analysis with meteorological terminology and data-driven insights',
 		emoji: '🔬'
 	},
 	{
 		id: 'cute',
 		name: 'Cute',
 		description: 'Sweet & whimsical',
-		prompt: 'adorable and sweet weather report with charming nature imagery like birds chirping, butterflies dancing, puddle jumping, sunset watching. Be whimsical and positive with cute metaphors and delightful activities',
+		prompt:
+			'adorable and sweet weather report with charming nature imagery like birds chirping, butterflies dancing, puddle jumping, sunset watching. Be whimsical and positive with cute metaphors and delightful activities',
 		emoji: '🦋'
 	}
 ];
@@ -108,11 +114,11 @@ if (browser) {
 }
 
 export function nextTone() {
-	currentToneIndex.update(index => (index + 1) % tones.length);
+	currentToneIndex.update((index) => (index + 1) % tones.length);
 }
 
 export function previousTone() {
-	currentToneIndex.update(index => index === 0 ? tones.length - 1 : index - 1);
+	currentToneIndex.update((index) => (index === 0 ? tones.length - 1 : index - 1));
 }
 
 export function getCurrentTone(index: number): Tone {

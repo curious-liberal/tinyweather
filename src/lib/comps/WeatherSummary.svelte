@@ -86,7 +86,12 @@
 	.loading-pulse {
 		width: 60px;
 		height: 60px;
-		background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 70%, transparent 100%);
+		background: radial-gradient(
+			circle,
+			rgba(255, 255, 255, 0.8) 0%,
+			rgba(255, 255, 255, 0.3) 70%,
+			transparent 100%
+		);
 		border-radius: 50%;
 		animation: gentlePulse 2s ease-in-out infinite;
 		position: relative;
@@ -107,7 +112,9 @@
 
 	.loading-text {
 		color: rgba(255, 255, 255, 0.9);
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		font-family:
+			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+			'Helvetica Neue', sans-serif;
 		font-size: 1.1em;
 		margin: 0;
 		font-weight: 500;
@@ -116,7 +123,9 @@
 	}
 
 	.weather-summary {
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		font-family:
+			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+			'Helvetica Neue', sans-serif;
 		font-size: 1.6em;
 		line-height: 1.6;
 		color: white;
@@ -148,7 +157,8 @@
 	}
 
 	@keyframes gentlePulse {
-		0%, 100% {
+		0%,
+		100% {
 			transform: scale(1);
 			opacity: 0.8;
 		}
@@ -159,7 +169,8 @@
 	}
 
 	@keyframes innerPulse {
-		0%, 100% {
+		0%,
+		100% {
 			transform: translate(-50%, -50%) scale(1);
 			opacity: 1;
 		}
@@ -170,7 +181,8 @@
 	}
 
 	@keyframes textPulse {
-		0%, 100% {
+		0%,
+		100% {
 			opacity: 0.9;
 		}
 		50% {
@@ -182,12 +194,12 @@
 		0% {
 			transform: translateY(3em);
 			opacity: 0;
-			color: rgb(4, 6, 47);
+			color: rgba(255, 255, 255, 0.7);
 		}
 
 		100% {
-			opacity: 100;
-			color: #2d3748;
+			opacity: 1;
+			color: white;
 		}
 	}
 </style>

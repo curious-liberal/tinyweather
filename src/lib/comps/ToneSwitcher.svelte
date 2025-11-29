@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { currentToneIndex, tones, getCurrentTone, nextTone, previousTone } from '$lib/stores/toneStore';
+	import {
+		currentToneIndex,
+		tones,
+		getCurrentTone,
+		nextTone,
+		previousTone
+	} from '$lib/stores/toneStore';
 
 	interface Props {
 		onToneChange: () => void;
@@ -123,7 +129,10 @@
 					type="button"
 					class="dot"
 					class:active={index === $currentToneIndex}
-					onclick={() => { currentToneIndex.set(index); onToneChange(); }}
+					onclick={() => {
+						currentToneIndex.set(index);
+						onToneChange();
+					}}
 					aria-label="Switch to {tone.name} tone"
 				></button>
 			{/each}
@@ -141,16 +150,22 @@
 			<button
 				type="button"
 				class="arrow left"
-				onclick={() => { previousTone(); onToneChange(); }}
-				aria-label="Previous tone"
-			>←</button>
+				onclick={() => {
+					previousTone();
+					onToneChange();
+				}}
+				aria-label="Previous tone">←</button
+			>
 			<span class="hint-text">Swipe to change tone</span>
 			<button
 				type="button"
 				class="arrow right"
-				onclick={() => { nextTone(); onToneChange(); }}
-				aria-label="Next tone"
-			>→</button>
+				onclick={() => {
+					nextTone();
+					onToneChange();
+				}}
+				aria-label="Next tone">→</button
+			>
 		</div>
 	</div>
 </div>
@@ -311,7 +326,8 @@
 	}
 
 	@keyframes float {
-		0%, 100% {
+		0%,
+		100% {
 			transform: translateY(0);
 		}
 		50% {
@@ -320,7 +336,8 @@
 	}
 
 	@keyframes pulse {
-		0%, 100% {
+		0%,
+		100% {
 			opacity: 0.7;
 			transform: scale(1);
 		}

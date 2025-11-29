@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { TypeWriter } from '$lib/libs/typewriter';
 	import { onMount } from 'svelte';
-	import { searchLocations, searchLocationsWithContext, fetchWeatherData, processWeatherData, interpretWeather } from '$lib/services';
+	import {
+		searchLocations,
+		searchLocationsWithContext,
+		fetchWeatherData,
+		processWeatherData,
+		interpretWeather
+	} from '$lib/services';
 	import { generateFollowUpSuggestions } from '$lib/services/followUpService';
 	import { getWeatherGradient } from '$lib/services/gradientService';
 	import { currentToneIndex, getCurrentTone } from '$lib/stores/toneStore';
@@ -18,23 +24,32 @@
 	import ToneSwitcher from './ToneSwitcher.svelte';
 	import FollowUpSuggestions from './FollowUpSuggestions.svelte';
 	import RegenerateButton from './RegenerateButton.svelte';
-	import type { NominatimResult, ProcessedWeatherData, FollowUpSuggestion } from '$lib/types/weather';
+	import type {
+		NominatimResult,
+		ProcessedWeatherData,
+		FollowUpSuggestion
+	} from '$lib/types/weather';
 	import type { UserLocation } from '$lib/services/geolocationService';
 
 	interface Props {
 		placeholderSuggestions: string[];
-		searchIcon?: "left" | "none";
-		onGradientChange?: (gradient: {background: string, accent: string}) => void;
+		searchIcon?: 'left' | 'none';
+		onGradientChange?: (gradient: { background: string; accent: string }) => void;
 		onSearchLogged?: () => void;
 	}
 
-	const { placeholderSuggestions = [], searchIcon = "none", onGradientChange, onSearchLogged }: Props = $props();
+	const {
+		placeholderSuggestions = [],
+		searchIcon = 'none',
+		onGradientChange,
+		onSearchLogged
+	}: Props = $props();
 
 	// State
-	let query = $state("");
+	let query = $state('');
 	let suggestions: string[] = $state([]);
 	let suggestionsCoords: string[][] = $state([]);
-	let weatherSummary: string = $state("");
+	let weatherSummary: string = $state('');
 	let isLoadingWeather: boolean = $state(false);
 	let placeholder = $state('');
 	let currentWeatherData: ProcessedWeatherData | null = $state(null);
@@ -89,9 +104,9 @@
 	$effect(debounceSearch);
 
 	const handleSuggestionSelect = async (index: number) => {
-		console.log("Selecting location...");
+		console.log('Selecting location...');
 		isLoadingWeather = true;
-		weatherSummary = "";
+		weatherSummary = '';
 		followUpSuggestions = [];
 
 		// Store location info before clearing suggestions
@@ -107,12 +122,12 @@
 			let processedData: ProcessedWeatherData;
 
 			if (cachedData) {
-				console.log("Using cached weather data");
+				console.log('Using cached weather data');
 				loadingType = 'response'; // We have weather data, just need response
 				processedData = cachedData.data;
 				currentWeatherData = processedData;
 			} else {
-				console.log("Fetching new weather data");
+				console.log('Fetching new weather data');
 				loadingType = 'weather'; // Need to fetch weather data
 				const weatherData = await fetchWeatherData(coordinates.lat, coordinates.lon);
 				processedData = processWeatherData(weatherData);
@@ -123,15 +138,19 @@
 				loadingType = 'response'; // Now generating response
 			}
 
+			// Update gradient immediately after we have weather data
+			const gradient = getWeatherGradient(processedData);
+			onGradientChange?.(gradient);
+
 			// Check for cached response for current tone
 			const tone = getCurrentTone($currentToneIndex);
 			const cachedResponse = getCachedResponse(coordinates.lat, coordinates.lon, tone.id);
 
 			if (cachedResponse) {
-				console.log("Using cached response");
+				console.log('Using cached response');
 				weatherSummary = cachedResponse;
 			} else {
-				console.log("Generating new response");
+				console.log('Generating new response');
 				loadingType = 'response'; // Generating new response
 				const summary = await interpretWeather(processedData, tone);
 				weatherSummary = summary;
@@ -142,17 +161,12 @@
 			// Generate follow-up suggestions
 			followUpSuggestions = generateFollowUpSuggestions(processedData, currentLocation);
 
-			// Update gradient based on weather
-			const gradient = getWeatherGradient(processedData);
-			onGradientChange?.(gradient);
-
 			// Log the successful search
 			logSearch(currentLocation);
 			onSearchLogged?.();
-
 		} catch (error) {
-			console.error("Error fetching weather:", error);
-			weatherSummary = "Sorry, there was an error getting the weather data.";
+			console.error('Error fetching weather:', error);
+			weatherSummary = 'Sorry, there was an error getting the weather data.';
 		} finally {
 			isLoadingWeather = false;
 		}
@@ -176,20 +190,24 @@
 				const tone = getCurrentTone($currentToneIndex);
 
 				// Check for cached response first
-				const cachedResponse = getCachedResponse(currentCoordinates.lat, currentCoordinates.lon, tone.id);
+				const cachedResponse = getCachedResponse(
+					currentCoordinates.lat,
+					currentCoordinates.lon,
+					tone.id
+				);
 
 				if (cachedResponse) {
-					console.log("Using cached tone response");
+					console.log('Using cached tone response');
 					weatherSummary = cachedResponse;
 				} else {
-					console.log("Generating new tone response");
+					console.log('Generating new tone response');
 					const summary = await interpretWeather(currentWeatherData, tone);
 					weatherSummary = summary;
 					// Cache the new response
 					setCachedResponse(currentCoordinates.lat, currentCoordinates.lon, tone.id, summary);
 				}
 			} catch (error) {
-				console.error("Error updating tone:", error);
+				console.error('Error updating tone:', error);
 			} finally {
 				isLoadingWeather = false;
 			}
@@ -204,7 +222,7 @@
 
 		try {
 			const tone = getCurrentTone($currentToneIndex);
-			console.log("Regenerating response");
+			console.log('Regenerating response');
 
 			// Force new generation, bypassing cache
 			const summary = await interpretWeather(currentWeatherData, tone);
@@ -213,7 +231,7 @@
 			// Update cache with new response
 			setCachedResponse(currentCoordinates.lat, currentCoordinates.lon, tone.id, summary);
 		} catch (error) {
-			console.error("Error regenerating response:", error);
+			console.error('Error regenerating response:', error);
 		} finally {
 			isRegenerating = false;
 		}
@@ -232,24 +250,33 @@
 		tw.write();
 
 		// Initialize user location
-		getUserLocation().then(location => {
-			userLocation = location;
-			if (location) {
-				console.log('User location detected:', location);
-			} else {
-				console.log('Could not detect user location');
-			}
-		}).catch(error => {
-			console.warn('Geolocation failed:', error);
-		});
+		getUserLocation()
+			.then((location) => {
+				userLocation = location;
+				if (location) {
+					console.log('User location detected:', location);
+				} else {
+					console.log('Could not detect user location');
+				}
+			})
+			.catch((error) => {
+				console.warn('Geolocation failed:', error);
+			});
 	});
 </script>
 
 <div class="search-container">
 	<div class="searchbar-wrapper">
 		<span class="icon {searchIcon}">
-			<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-				<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="currentColor"
+				class="bi bi-search"
+				viewBox="0 0 16 16"
+			>
+				<path
+					d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+				/>
 			</svg>
 		</span>
 		<input bind:value={query} class="search-input" type="text" {placeholder} />
@@ -296,10 +323,12 @@
 		display: flex;
 		justify-content: center;
 		position: relative;
-		background: linear-gradient(135deg,
+		background: linear-gradient(
+			135deg,
 			rgba(255, 255, 255, 0.25) 0%,
 			rgba(255, 255, 255, 0.15) 50%,
-			rgba(255, 255, 255, 0.1) 100%);
+			rgba(255, 255, 255, 0.1) 100%
+		);
 		backdrop-filter: blur(20px) saturate(180%);
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border-radius: 50px;
@@ -313,10 +342,12 @@
 	}
 
 	.searchbar-wrapper:hover {
-		background: linear-gradient(135deg,
+		background: linear-gradient(
+			135deg,
 			rgba(255, 255, 255, 0.35) 0%,
 			rgba(255, 255, 255, 0.25) 50%,
-			rgba(255, 255, 255, 0.2) 100%);
+			rgba(255, 255, 255, 0.2) 100%
+		);
 		box-shadow:
 			0 12px 40px rgba(0, 0, 0, 0.15),
 			inset 0 1px 0 rgba(255, 255, 255, 0.4),
@@ -331,7 +362,9 @@
 		caret-color: white;
 		width: 100%;
 		color: white;
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		font-family:
+			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+			'Helvetica Neue', sans-serif;
 		font-size: 1.2em;
 		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 	}

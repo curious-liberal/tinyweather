@@ -26,7 +26,7 @@ function generateLocationKey(lat: number, lon: number): string {
 export function getCachedWeatherData(lat: number, lon: number): CachedWeatherData | null {
 	const locationKey = generateLocationKey(lat, lon);
 
-	weatherCache.subscribe(cache => {
+	weatherCache.subscribe((cache) => {
 		const cached = cache[locationKey];
 		if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
 			return cached;
@@ -36,7 +36,7 @@ export function getCachedWeatherData(lat: number, lon: number): CachedWeatherDat
 
 	// Direct cache access for synchronous operation
 	let currentCache: WeatherCache = {};
-	weatherCache.subscribe(cache => currentCache = cache)();
+	weatherCache.subscribe((cache) => (currentCache = cache))();
 
 	const cached = currentCache[locationKey];
 	if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
@@ -54,7 +54,7 @@ export function setCachedWeatherData(
 ): void {
 	const locationKey = generateLocationKey(lat, lon);
 
-	weatherCache.update(cache => ({
+	weatherCache.update((cache) => ({
 		...cache,
 		[locationKey]: {
 			location,
@@ -71,10 +71,15 @@ export function getCachedResponse(lat: number, lon: number, toneId: string): str
 	return cached?.responses[toneId] || null;
 }
 
-export function setCachedResponse(lat: number, lon: number, toneId: string, response: string): void {
+export function setCachedResponse(
+	lat: number,
+	lon: number,
+	toneId: string,
+	response: string
+): void {
 	const locationKey = generateLocationKey(lat, lon);
 
-	weatherCache.update(cache => {
+	weatherCache.update((cache) => {
 		const existing = cache[locationKey];
 		if (!existing) return cache;
 
@@ -92,7 +97,7 @@ export function setCachedResponse(lat: number, lon: number, toneId: string, resp
 }
 
 export function clearExpiredCache(): void {
-	weatherCache.update(cache => {
+	weatherCache.update((cache) => {
 		const now = Date.now();
 		const cleaned: WeatherCache = {};
 

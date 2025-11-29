@@ -1,5 +1,5 @@
-import type { ProcessedWeatherData } from "$lib/types/weather";
-import type { Tone } from "$lib/stores/toneStore";
+import type { ProcessedWeatherData } from '$lib/types/weather';
+import type { Tone } from '$lib/stores/toneStore';
 
 interface AIServiceOptions {
 	model?: string;
@@ -12,13 +12,9 @@ export async function interpretWeather(
 	tone: Tone,
 	options: AIServiceOptions = {}
 ): Promise<string> {
-	const {
-		model = "Qwen/Qwen3-32B",
-		temperature = 0.7,
-		max_tokens = 2048
-	} = options;
+	const { model = 'Qwen/Qwen3-32B', temperature = 0.7, max_tokens = 2048 } = options;
 
-	const endpoint = "https://api.deepinfra.com/v1/openai/chat/completions";
+	const endpoint = 'https://api.deepinfra.com/v1/openai/chat/completions';
 
 	const prompt = `
 Here is weather data in JSON:
@@ -30,18 +26,16 @@ Be clear, human-readable, and concise. Do not include thinking tags, only weathe
 
 	const body = {
 		max_tokens,
-		messages: [
-			{ role: "user", content: prompt }
-		],
+		messages: [{ role: 'user', content: prompt }],
 		model,
 		temperature,
 		stream: false
 	};
 
 	const response = await fetch(endpoint, {
-		method: "POST",
+		method: 'POST',
 		headers: {
-			"Content-Type": "application/json"
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(body)
 	});
@@ -53,11 +47,10 @@ Be clear, human-readable, and concise. Do not include thinking tags, only weathe
 	const json = await response.json();
 
 	// Remove <think>...</think> blocks if present
-	const weatherSummary = (
-		json.output_text ||
-		json.choices?.[0]?.message?.content ||
-		""
-	).replace(/<think>[\s\S]*?<\/think>/gi, "");
+	const weatherSummary = (json.output_text || json.choices?.[0]?.message?.content || '').replace(
+		/<think>[\s\S]*?<\/think>/gi,
+		''
+	);
 
 	return weatherSummary;
 }

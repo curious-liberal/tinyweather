@@ -1,4 +1,4 @@
-import type { ProcessedWeatherData } from "$lib/types/weather";
+import type { ProcessedWeatherData } from '$lib/types/weather';
 
 export interface FollowUpSuggestion {
 	id: string;
@@ -7,7 +7,10 @@ export interface FollowUpSuggestion {
 	emoji: string;
 }
 
-export function generateFollowUpSuggestions(weatherData: ProcessedWeatherData, location: string): FollowUpSuggestion[] {
+export function generateFollowUpSuggestions(
+	weatherData: ProcessedWeatherData,
+	location: string
+): FollowUpSuggestion[] {
 	const suggestions: FollowUpSuggestion[] = [];
 	const { precipitation, wind, temperature, clouds } = weatherData;
 
@@ -44,7 +47,7 @@ export function generateFollowUpSuggestions(weatherData: ProcessedWeatherData, l
 		const commonSuggestions = [
 			{
 				id: 'tomorrow',
-				text: "What about tomorrow?",
+				text: 'What about tomorrow?',
 				prompt: `Can you tell me what the weather might be like tomorrow in ${location}? Any significant changes expected?`,
 				emoji: '📅'
 			},
@@ -63,8 +66,8 @@ export function generateFollowUpSuggestions(weatherData: ProcessedWeatherData, l
 		];
 
 		// Add suggestions that haven't been added yet
-		commonSuggestions.forEach(suggestion => {
-			if (!suggestions.find(s => s.id === suggestion.id) && suggestions.length < 3) {
+		commonSuggestions.forEach((suggestion) => {
+			if (!suggestions.find((s) => s.id === suggestion.id) && suggestions.length < 3) {
 				suggestions.push(suggestion);
 			}
 		});
@@ -86,7 +89,7 @@ export async function answerFollowUpQuestion(
 	weatherData: ProcessedWeatherData,
 	location: string
 ): Promise<string> {
-	const endpoint = "https://api.deepinfra.com/v1/openai/chat/completions";
+	const endpoint = 'https://api.deepinfra.com/v1/openai/chat/completions';
 
 	const prompt = `
 Here is the current weather data for ${location}:
@@ -99,18 +102,16 @@ Please provide a helpful, concise answer (2-3 sentences max) based on the weathe
 
 	const body = {
 		max_tokens: 1024,
-		messages: [
-			{ role: "user", content: prompt }
-		],
-		model: "Qwen/Qwen3-32B",
+		messages: [{ role: 'user', content: prompt }],
+		model: 'Qwen/Qwen3-32B',
 		temperature: 0.7,
 		stream: false
 	};
 
 	const response = await fetch(endpoint, {
-		method: "POST",
+		method: 'POST',
 		headers: {
-			"Content-Type": "application/json"
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(body)
 	});
@@ -121,11 +122,10 @@ Please provide a helpful, concise answer (2-3 sentences max) based on the weathe
 
 	const json = await response.json();
 
-	const answer = (
-		json.output_text ||
-		json.choices?.[0]?.message?.content ||
-		""
-	).replace(/<think>[\s\S]*?<\/think>/gi, "");
+	const answer = (json.output_text || json.choices?.[0]?.message?.content || '').replace(
+		/<think>[\s\S]*?<\/think>/gi,
+		''
+	);
 
 	return answer;
 }

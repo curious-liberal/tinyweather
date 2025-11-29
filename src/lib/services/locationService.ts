@@ -1,7 +1,10 @@
-import type { NominatimResult } from "$lib/types/weather";
+import type { NominatimResult } from '$lib/types/weather';
 import type { UserLocation } from './geolocationService';
 
-export async function searchLocations(query: string, limit: number = 3): Promise<NominatimResult[]> {
+export async function searchLocations(
+	query: string,
+	limit: number = 3
+): Promise<NominatimResult[]> {
 	const params = new URLSearchParams({
 		q: query,
 		format: 'jsonv2',
@@ -20,12 +23,13 @@ export async function searchLocations(query: string, limit: number = 3): Promise
 		const category = result.category?.toLowerCase() || '';
 
 		// Remove obvious businesses and addresses with numbers
-		const isNotBusiness = !displayName.includes('ltd') &&
-							  !displayName.includes('&') &&
-							  !displayName.includes('centre') &&
-							  !displayName.includes('shop') &&
-							  category !== 'shop' &&
-							  category !== 'amenity';
+		const isNotBusiness =
+			!displayName.includes('ltd') &&
+			!displayName.includes('&') &&
+			!displayName.includes('centre') &&
+			!displayName.includes('shop') &&
+			category !== 'shop' &&
+			category !== 'amenity';
 
 		const isNotAddress = !displayName.match(/^\d+/); // Not starting with house number
 
@@ -38,7 +42,7 @@ export async function searchLocations(query: string, limit: number = 3): Promise
 export async function searchLocationsWithContext(
 	query: string,
 	userLocation: UserLocation | null
-): Promise<{ local: NominatimResult[], global: NominatimResult[] }> {
+): Promise<{ local: NominatimResult[]; global: NominatimResult[] }> {
 	try {
 		if (!userLocation?.country) {
 			// No country - just do global search
@@ -60,9 +64,9 @@ export async function searchLocationsWithContext(
 		if (remainingSlots > 0) {
 			const allGlobalResults = await searchLocations(query, remainingSlots + 2); // Get a few extra
 			// Filter out any that match local results by display name
-			const localDisplayNames = new Set(localResults.map(r => r.display_name));
+			const localDisplayNames = new Set(localResults.map((r) => r.display_name));
 			globalResults = allGlobalResults
-				.filter(r => !localDisplayNames.has(r.display_name))
+				.filter((r) => !localDisplayNames.has(r.display_name))
 				.slice(0, remainingSlots);
 		}
 
@@ -70,7 +74,6 @@ export async function searchLocationsWithContext(
 			local: localResults,
 			global: globalResults
 		};
-
 	} catch (error) {
 		console.error('Error in location search:', error);
 		const fallbackResults = await searchLocations(query, 5);

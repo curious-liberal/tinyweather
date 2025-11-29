@@ -1,7 +1,7 @@
 export interface NominatimResult {
 	place_id: number;
 	licence: string;
-	osm_type: "node" | "way" | "relation";
+	osm_type: 'node' | 'way' | 'relation';
 	osm_id: number;
 	lat: string;
 	lon: string;

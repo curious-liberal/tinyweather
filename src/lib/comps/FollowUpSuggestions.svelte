@@ -35,7 +35,7 @@
 			followUpAnswer = answer;
 		} catch (error) {
 			console.error('Error getting follow-up answer:', error);
-			followUpAnswer = 'Sorry, I couldn\'t get an answer right now.';
+			followUpAnswer = "Sorry, I couldn't get an answer right now.";
 		} finally {
 			isAnswering = false;
 		}
@@ -53,7 +53,7 @@
 			followUpAnswer = answer;
 		} catch (error) {
 			console.error('Error getting custom answer:', error);
-			followUpAnswer = 'Sorry, I couldn\'t get an answer right now.';
+			followUpAnswer = "Sorry, I couldn't get an answer right now.";
 		} finally {
 			isAnswering = false;
 		}
@@ -95,7 +95,13 @@
 					<button onclick={handleCustomSubmit} class="submit-btn" disabled={!customQuestion.trim()}>
 						Ask
 					</button>
-					<button onclick={() => { showCustomInput = false; customQuestion = ''; }} class="cancel-btn">
+					<button
+						onclick={() => {
+							showCustomInput = false;
+							customQuestion = '';
+						}}
+						class="cancel-btn"
+					>
 						Cancel
 					</button>
 				</div>
@@ -176,10 +182,12 @@
 	}
 
 	.custom-input-wrapper {
-		background: linear-gradient(135deg,
+		background: linear-gradient(
+			135deg,
 			rgba(255, 255, 255, 0.2) 0%,
 			rgba(255, 255, 255, 0.15) 50%,
-			rgba(255, 255, 255, 0.1) 100%);
+			rgba(255, 255, 255, 0.1) 100%
+		);
 		backdrop-filter: blur(20px) saturate(180%);
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border-radius: 20px;
@@ -215,7 +223,8 @@
 		justify-content: flex-end;
 	}
 
-	.submit-btn, .cancel-btn {
+	.submit-btn,
+	.cancel-btn {
 		padding: 0.5em 1.2em;
 		border-radius: 12px;
 		border: none;
@@ -259,10 +268,12 @@
 	}
 
 	.answer-content {
-		background: linear-gradient(135deg,
+		background: linear-gradient(
+			135deg,
 			rgba(255, 255, 255, 0.2) 0%,
 			rgba(255, 255, 255, 0.15) 50%,
-			rgba(255, 255, 255, 0.1) 100%);
+			rgba(255, 255, 255, 0.1) 100%
+		);
 		backdrop-filter: blur(20px) saturate(180%);
 		-webkit-backdrop-filter: blur(20px) saturate(180%);
 		border-radius: 20px;
@@ -317,8 +328,12 @@
 		animation: dotPulse 1.4s ease-in-out infinite both;
 	}
 
-	.dot:nth-child(2) { animation-delay: 0.2s; }
-	.dot:nth-child(3) { animation-delay: 0.4s; }
+	.dot:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.dot:nth-child(3) {
+		animation-delay: 0.4s;
+	}
 
 	@keyframes bubbleGrow {
 		0% {
@@ -358,7 +373,9 @@
 	}
 
 	@keyframes dotPulse {
-		0%, 80%, 100% {
+		0%,
+		80%,
+		100% {
 			transform: scale(0.8);
 			opacity: 0.5;
 		}

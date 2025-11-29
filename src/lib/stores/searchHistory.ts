@@ -16,7 +16,7 @@ const MAX_HISTORY_ENTRIES = 50;
 const HISTORY_CLEANUP_DAYS = 30;
 
 // Default placeholder suggestions (fallback)
-const DEFAULT_SUGGESTIONS = ["London", "Glasgow", "Birmingham", "Norwich", "Malta"];
+const DEFAULT_SUGGESTIONS = ['London', 'Glasgow', 'Birmingham', 'Norwich', 'Malta'];
 
 // Load search history from localStorage
 function loadSearchHistory(): SearchHistory {
@@ -51,7 +51,7 @@ function saveSearchHistory(history: SearchHistory): void {
 
 // Clean up old entries (older than HISTORY_CLEANUP_DAYS)
 function cleanupOldEntries(history: SearchHistory): SearchHistory {
-	const cutoffDate = Date.now() - (HISTORY_CLEANUP_DAYS * 24 * 60 * 60 * 1000);
+	const cutoffDate = Date.now() - HISTORY_CLEANUP_DAYS * 24 * 60 * 60 * 1000;
 	const cleaned: SearchHistory = {};
 
 	Object.entries(history).forEach(([location, entry]) => {
@@ -106,7 +106,7 @@ export function logSearch(location: string): void {
 
 	const cleanLocation = location.trim();
 
-	searchHistory.update(history => {
+	searchHistory.update((history) => {
 		let updated = { ...history };
 
 		if (updated[cleanLocation]) {
@@ -138,7 +138,7 @@ export function getPopularSearches(limit: number = 5): string[] {
 	let currentHistory: SearchHistory = {};
 
 	// Get current state synchronously
-	searchHistory.subscribe(history => currentHistory = history)();
+	searchHistory.subscribe((history) => (currentHistory = history))();
 
 	const entries = Object.values(currentHistory);
 
@@ -147,9 +147,9 @@ export function getPopularSearches(limit: number = 5): string[] {
 	}
 
 	// Calculate usage score (count * recency factor)
-	const scored = entries.map(entry => {
+	const scored = entries.map((entry) => {
 		const daysSinceSearch = (Date.now() - entry.lastSearched) / (24 * 60 * 60 * 1000);
-		const recencyFactor = Math.max(0.1, 1 - (daysSinceSearch / 30)); // Decay over 30 days
+		const recencyFactor = Math.max(0.1, 1 - daysSinceSearch / 30); // Decay over 30 days
 		const score = entry.count * recencyFactor;
 
 		return { ...entry, score };
@@ -159,9 +159,12 @@ export function getPopularSearches(limit: number = 5): string[] {
 	const popular = scored
 		.sort((a, b) => b.score - a.score)
 		.slice(0, limit)
-		.map(entry => {
+		.map((entry) => {
 			// Split by comma and take first non-empty part
-			const parts = entry.location.split(',').map(part => part.trim()).filter(part => part.length > 0);
+			const parts = entry.location
+				.split(',')
+				.map((part) => part.trim())
+				.filter((part) => part.length > 0);
 			return parts[0] || entry.location;
 		});
 
@@ -183,9 +186,13 @@ export function clearSearchHistory(): void {
 }
 
 // Get search stats for debugging
-export function getSearchStats(): { totalSearches: number; uniqueLocations: number; mostSearched?: SearchHistoryEntry } {
+export function getSearchStats(): {
+	totalSearches: number;
+	uniqueLocations: number;
+	mostSearched?: SearchHistoryEntry;
+} {
 	let currentHistory: SearchHistory = {};
-	searchHistory.subscribe(history => currentHistory = history)();
+	searchHistory.subscribe((history) => (currentHistory = history))();
 
 	const entries = Object.values(currentHistory);
 	const totalSearches = entries.reduce((sum, entry) => sum + entry.count, 0);
