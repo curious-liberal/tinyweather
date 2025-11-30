@@ -94,15 +94,16 @@ if (isNight) {
 			onGradientChange={handleGradientChange}
 			onSearchLogged={updatePlaceholderSuggestions}
 		/>
-		<button class="footer" type="button" onclick={handleFooterClick}>
+		<div class="footer" onclick={handleFooterClick} role="button" tabindex="0">
 			Made with love by Curiio
-		</button>
+		</div>
 	</div>
 </div>
 
 <style>
 	.wrapper {
 		min-height: 100vh;
+		min-height: 100dvh;
 		display: flex;
 		position: relative;
 		overflow: hidden;
@@ -115,6 +116,8 @@ if (isNight) {
 		transition-property: opacity;
 		pointer-events: none;
 		z-index: 0;
+		min-height: 100vh;
+		min-height: 100dvh;
 	}
 
 	.bg::after {
@@ -288,12 +291,20 @@ if (isNight) {
 		-webkit-user-select: none;
 		transition: all 0.3s ease;
 		animation: gentleFloat 3s ease-in-out infinite;
+		background: transparent;
+		border: none;
+		box-shadow: none;
+		outline: none;
 	}
 
 	.footer:hover {
 		color: rgba(255, 255, 255, 0.9);
 		transform: translateY(-2px);
 		animation-play-state: paused;
+		text-shadow:
+			0 1px 3px rgba(0, 0, 0, 0.2),
+			0 0 20px rgba(255, 255, 255, 0.3),
+			0 0 30px rgba(255, 255, 255, 0.2);
 	}
 
 	.footer:active {

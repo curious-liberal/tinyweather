@@ -46,12 +46,6 @@ export function generateFollowUpSuggestions(
 	if (suggestions.length < 4) {
 		const commonSuggestions = [
 			{
-				id: 'tomorrow',
-				text: 'What about tomorrow?',
-				prompt: `Can you tell me what the weather might be like tomorrow in ${location}? Any significant changes expected?`,
-				emoji: '📅'
-			},
-			{
 				id: 'activities',
 				text: 'Best time for activities?',
 				prompt: `Based on today's weather in ${location}, what's the best time of day for outdoor activities?`,
@@ -59,7 +53,7 @@ export function generateFollowUpSuggestions(
 			},
 			{
 				id: 'comparison',
-				text: 'Compare to yesterday?',
+				text: 'Typical for this time?',
 				prompt: `How does today's weather in ${location} compare to typical weather for this time of year?`,
 				emoji: '📊'
 			},
@@ -68,6 +62,12 @@ export function generateFollowUpSuggestions(
 				text: 'Safe to drive?',
 				prompt: `Based on the weather conditions in ${location}, are the driving conditions safe today? Any precautions needed?`,
 				emoji: '🚗'
+			},
+			{
+				id: 'feels-like',
+				text: 'How does it feel?',
+				prompt: `Based on the temperature, humidity, and wind in ${location}, how would it actually feel outside right now?`,
+				emoji: '🌡️'
 			}
 		];
 

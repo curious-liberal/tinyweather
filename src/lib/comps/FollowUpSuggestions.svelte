@@ -112,7 +112,7 @@
 				<button
 					class="suggestion-tag"
 					class:custom={suggestion.id === 'custom'}
-					class:mobile-hidden={index > 2}
+					class:phone-hidden={index > 1 && index !== displaySuggestions.length - 1}
 					onclick={() => handleSuggestionClick(suggestion)}
 					style="animation-delay: {index * 150}ms"
 				>
@@ -193,7 +193,7 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5em;
-		padding: 0.75em 0.95em;
+		padding: 0.75em 1em;
 		background: rgba(255, 255, 255, 0.15);
 		backdrop-filter: blur(20px);
 		border: 1px solid rgba(255, 255, 255, 0.2);
@@ -207,8 +207,8 @@
 		animation: bubbleGrow 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 		opacity: 0;
 		transform: scale(0);
-		text-align: left;
-		justify-content: flex-start;
+		text-align: center;
+		justify-content: center;
 	}
 
 	/* Desktop: Top 3 items each span 2 columns (filling 6 columns) */
@@ -241,12 +241,10 @@
 
 	.emoji {
 		font-size: 1.2em;
-		flex-shrink: 0;
 	}
 
 	.text {
-		flex: 1;
-		text-align: left;
+		text-align: center;
 		line-height: 1.3;
 	}
 
@@ -462,14 +460,14 @@
 		}
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 600px) {
 		.suggestions-grid {
 			grid-template-columns: repeat(2, 1fr);
 			gap: 0.65em;
 			width: 100%;
 		}
 
-		/* Reset all desktop positioning for mobile */
+		/* Reset all desktop positioning for phones */
 		.suggestion-tag:nth-child(1),
 		.suggestion-tag:nth-child(2),
 		.suggestion-tag:nth-child(3),
@@ -479,17 +477,17 @@
 			justify-self: stretch;
 		}
 
-		/* Hide suggestions 4 and 5 on mobile (show only 3 total) */
-		.suggestion-tag.mobile-hidden {
+		/* Hide suggestions 2-4 on phones (show only 2 + "Something else") */
+		.suggestion-tag.phone-hidden {
 			display: none;
 		}
 
-		/* Mobile: 3rd suggestion (Something else) spans both columns and is centered */
-		.suggestion-tag:nth-child(3) {
+		/* Phones: Last suggestion (Something else) spans both columns and is centered */
+		.suggestion-tag:last-child {
 			grid-column: 1 / 3;
 			justify-self: center;
-			width: 100%;
-			max-width: 280px;
+			width: auto;
+			padding: 0.75em 1.2em;
 		}
 
 		.follow-up-container {
