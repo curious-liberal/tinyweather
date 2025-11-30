@@ -94,9 +94,9 @@ if (isNight) {
 			onGradientChange={handleGradientChange}
 			onSearchLogged={updatePlaceholderSuggestions}
 		/>
-		<footer class="footer" onclick={handleFooterClick}>
+		<button class="footer" type="button" onclick={handleFooterClick}>
 			Made with love by Curiio
-		</footer>
+		</button>
 	</div>
 </div>
 
