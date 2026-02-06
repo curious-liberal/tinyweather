@@ -13,7 +13,7 @@ export async function interpretWeather(
 	tone: Tone,
 	options: AIServiceOptions = {}
 ): Promise<string> {
-	const { model = 'Qwen/Qwen3-32B', temperature = 0.7, max_tokens = 2048 } = options;
+	const { model = 'openai/gpt-oss-120b:free', temperature = 0.7, max_tokens = 2048 } = options;
 
 	const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -43,7 +43,7 @@ Be clear, human-readable, and concise. Do not include thinking tags, only weathe
 	});
 
 	if (!response.ok) {
-		throw new Error(`DeepInfra request failed: ${response.status} ${response.statusText}`);
+		throw new Error(`API request to AI model failed: ${response.status} ${response.statusText}`);
 	}
 
 	const json = await response.json();
