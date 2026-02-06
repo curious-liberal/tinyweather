@@ -1,4 +1,5 @@
 import type { ProcessedWeatherData } from '$lib/types/weather';
+import { PUBLIC_API_KEY } from '$env/static/public';
 import type { Tone } from '$lib/stores/toneStore';
 
 interface AIServiceOptions {
@@ -14,7 +15,7 @@ export async function interpretWeather(
 ): Promise<string> {
 	const { model = 'Qwen/Qwen3-32B', temperature = 0.7, max_tokens = 2048 } = options;
 
-	const endpoint = 'https://api.deepinfra.com/v1/openai/chat/completions';
+	const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
 
 	const prompt = `
 Here is weather data in JSON:
@@ -35,7 +36,8 @@ Be clear, human-readable, and concise. Do not include thinking tags, only weathe
 	const response = await fetch(endpoint, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${PUBLIC_API_KEY}`
 		},
 		body: JSON.stringify(body)
 	});
