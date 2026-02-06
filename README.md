@@ -1,38 +1,11 @@
-# sv
+# Tiny Weather
+An AI powered weather app with a gorgeous UI that tells you the weather in various tones.
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+# A note about public API keys
+This app used to use Deep Infra to run client side as they didn't require an authorization header to process API requests. Unfortunately this is no longer the case. As a result I have decided to use Open Router as they provide some free models. In an effort to keep the code client-side I have exposed the API key on the client. However this API key is from a burner account that's not linked to any cards or payment details as it is using a free model.
 
-## Creating a project
+I haven't linked the API key in the Git repo but it's quite easy to detect client-side. I am aware of this and it's not a security issue I have a problem with.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Feel free to fork the repo and create a version where API requests are handled server-side, however I will not be doing this.
 
-```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Enjoy!
