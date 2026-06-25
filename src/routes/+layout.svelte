@@ -39,8 +39,9 @@
 	}
 
 	:global(.emoji) {
-		font-family: 'Apple Color Emoji', 'Twemoji Mozilla', 'Noto Color Emoji', 'Segoe UI Emoji', 'EmojiOne Color',
-			sans-serif;
+		font-family:
+			'Apple Color Emoji', 'Twemoji Mozilla', 'Noto Color Emoji', 'Segoe UI Emoji',
+			'EmojiOne Color', sans-serif;
 		font-synthesis: none;
 	}
 </style>

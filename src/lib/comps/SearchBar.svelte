@@ -331,7 +331,10 @@
 		}
 	};
 
-	const buildCombined = (local: NominatimResult[], global: NominatimResult[]): NominatimResult[] => {
+	const buildCombined = (
+		local: NominatimResult[],
+		global: NominatimResult[]
+	): NominatimResult[] => {
 		const topLocal = local.slice(0, 3);
 		const topGlobal = global.slice(0, 2);
 

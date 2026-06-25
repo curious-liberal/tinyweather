@@ -205,9 +205,7 @@ function isCountryMatch(result: NominatimResult, userLocation: UserLocation | nu
 	if (!target) return false;
 
 	const resultCountry =
-		result.address?.country_code?.toLowerCase() ||
-		result.address?.country?.toLowerCase() ||
-		'';
+		result.address?.country_code?.toLowerCase() || result.address?.country?.toLowerCase() || '';
 
 	if (resultCountry && resultCountry === target) {
 		return true;

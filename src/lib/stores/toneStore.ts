@@ -134,7 +134,7 @@ export const tones: Tone[] = [
 		prompt:
 			'adorable and sweet weather report with charming nature imagery like birds chirping, butterflies dancing, puddle jumping, sunset watching. Be whimsical and positive with cute metaphors and delightful activities',
 		emoji: '🦋'
-	},
+	}
 ];
 
 // localStorage key for tone preference

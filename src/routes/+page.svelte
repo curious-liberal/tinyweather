@@ -44,14 +44,14 @@
 	const hour = new Date().getHours();
 	const isNight = hour >= 20 || hour <= 7;
 
-let initialGradient: string;
-if (isNight) {
-	// Night: clean dark gradient
-	initialGradient = 'linear-gradient(135deg, #2C3E50 0%, #191970 100%)';
-} else {
+	let initialGradient: string;
+	if (isNight) {
+		// Night: clean dark gradient
+		initialGradient = 'linear-gradient(135deg, #2C3E50 0%, #191970 100%)';
+	} else {
 		// Day: clean bright gradient
 		initialGradient = 'linear-gradient(135deg, #87CEEB 0%, #FFE4B5 100%)';
-}
+	}
 
 	let gradientA = $state(initialGradient);
 	let gradientB = $state(initialGradient);
@@ -72,11 +72,15 @@ if (isNight) {
 <div class="wrapper">
 	<div
 		class="bg bg-a"
-		style="background: {gradientA}; opacity: {activeLayer === 'a' ? 1 : 0}; transition-duration: {fadeDuration}ms;"
+		style="background: {gradientA}; opacity: {activeLayer === 'a'
+			? 1
+			: 0}; transition-duration: {fadeDuration}ms;"
 	></div>
 	<div
 		class="bg bg-b"
-		style="background: {gradientB}; opacity: {activeLayer === 'b' ? 1 : 0}; transition-duration: {fadeDuration}ms;"
+		style="background: {gradientB}; opacity: {activeLayer === 'b'
+			? 1
+			: 0}; transition-duration: {fadeDuration}ms;"
 	></div>
 
 	{#if isNight}
