@@ -1,4 +1,7 @@
 import type { ProcessedWeatherData } from '$lib/types/weather';
+import { PUBLIC_API_KEY } from '$env/static/public';
+import { env } from '$env/dynamic/public';
+import { DEFAULT_AI_MODEL, OPENROUTER_ENDPOINT } from './aiConfig';
 
 export interface FollowUpSuggestion {
 	id: string;
@@ -95,7 +98,7 @@ export async function answerFollowUpQuestion(
 	weatherData: ProcessedWeatherData,
 	location: string
 ): Promise<string> {
-	const endpoint = 'https://api.deepinfra.com/v1/openai/chat/completions';
+	const endpoint = OPENROUTER_ENDPOINT;
 
 	const prompt = `
 Here is the current weather data for ${location}:
@@ -109,7 +112,7 @@ Please provide a helpful, concise answer (2-3 sentences max) based on the weathe
 	const body = {
 		max_tokens: 1024,
 		messages: [{ role: 'user', content: prompt }],
-		model: 'Qwen/Qwen3-32B',
+		model: env.PUBLIC_FOLLOWUP_MODEL || DEFAULT_AI_MODEL,
 		temperature: 0.7,
 		stream: false
 	};
@@ -117,13 +120,14 @@ Please provide a helpful, concise answer (2-3 sentences max) based on the weathe
 	const response = await fetch(endpoint, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${PUBLIC_API_KEY}`
 		},
 		body: JSON.stringify(body)
 	});
 
 	if (!response.ok) {
-		throw new Error(`DeepInfra request failed: ${response.status} ${response.statusText}`);
+		throw new Error(`API request to AI model failed: ${response.status} ${response.statusText}`);
 	}
 
 	const json = await response.json();

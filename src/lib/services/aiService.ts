@@ -1,6 +1,8 @@
 import type { ProcessedWeatherData } from '$lib/types/weather';
 import { PUBLIC_API_KEY } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import type { Tone } from '$lib/stores/toneStore';
+import { DEFAULT_AI_MODEL, OPENROUTER_ENDPOINT } from './aiConfig';
 
 interface AIServiceOptions {
 	model?: string;
@@ -13,9 +15,13 @@ export async function interpretWeather(
 	tone: Tone,
 	options: AIServiceOptions = {}
 ): Promise<string> {
-	const { model = 'openai/gpt-oss-120b:free', temperature = 0.7, max_tokens = 2048 } = options;
+	const {
+		model = env.PUBLIC_AI_MODEL || DEFAULT_AI_MODEL,
+		temperature = 0.7,
+		max_tokens = 2048
+	} = options;
 
-	const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+	const endpoint = OPENROUTER_ENDPOINT;
 
 	const prompt = `
 Here is weather data in JSON:
@@ -37,7 +43,7 @@ Be clear, human-readable, and concise. Do not include thinking tags, only weathe
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${PUBLIC_API_KEY}`
+			Authorization: `Bearer ${PUBLIC_API_KEY}`
 		},
 		body: JSON.stringify(body)
 	});
