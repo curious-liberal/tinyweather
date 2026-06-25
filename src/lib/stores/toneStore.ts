@@ -140,6 +140,39 @@ export const tones: Tone[] = [
 // localStorage key for tone preference
 const TONE_STORAGE_KEY = 'tinyweather-tone-preference';
 
+// Turn a value into a URL-friendly slug, e.g. "Comedic" -> "comedic".
+function slugify(value: string): string {
+	return value
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
+// Resolve a URL hash slug to a tone index, matching either its id or name
+// (e.g. "#comedic", "#inpc", "#professional"). Returns -1 if no match.
+function findToneIndexBySlug(slug: string): number {
+	const normalized = slugify(slug);
+	if (!normalized) return -1;
+	return tones.findIndex(
+		(tone) => slugify(tone.id) === normalized || slugify(tone.name) === normalized
+	);
+}
+
+// Reflect the current tone in the URL hash so the link is always shareable.
+// replaceState avoids scroll jumps and history spam on every tone switch.
+function updateUrlHash(index: number): void {
+	if (!browser) return;
+
+	const tone = tones[index];
+	if (!tone) return;
+
+	try {
+		history.replaceState(history.state, '', `#${slugify(tone.name)}`);
+	} catch (error) {
+		console.warn('Failed to update tone in URL:', error);
+	}
+}
+
 // Load saved tone index from localStorage
 function loadSavedToneIndex(): number {
 	if (!browser) return 0;
@@ -171,15 +204,31 @@ function saveToneIndex(index: number): void {
 	}
 }
 
-// Initialize store with saved preference
-const initialToneIndex = loadSavedToneIndex();
+// A shared link (e.g. #comedic, #inpc) takes priority over saved preference.
+function loadInitialToneIndex(): number {
+	if (browser) {
+		const hashIndex = findToneIndexBySlug(window.location.hash.replace(/^#/, ''));
+		if (hashIndex >= 0) return hashIndex;
+	}
+	return loadSavedToneIndex();
+}
+
+// Initialize store, preferring a shared hash link over the saved preference
+const initialToneIndex = loadInitialToneIndex();
 export const currentToneIndex = writable(initialToneIndex);
 export const isTransitioning = writable(false);
 
-// Subscribe to changes and save to localStorage
+// Persist changes to localStorage and keep the URL hash in sync for sharing
 if (browser) {
 	currentToneIndex.subscribe((index) => {
 		saveToneIndex(index);
+		updateUrlHash(index);
+	});
+
+	// Allow pasting/visiting a different #tone link to switch the active tone
+	window.addEventListener('hashchange', () => {
+		const index = findToneIndexBySlug(window.location.hash.replace(/^#/, ''));
+		if (index >= 0) currentToneIndex.set(index);
 	});
 }
 
